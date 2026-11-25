@@ -1,0 +1,4815 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>血液科照會罐頭文字系統 | Hematology Consult Helper</title>
+  <style>
+:root {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-subtle: #f8fafc;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --primary: #0f4c81;
+  --primary-hover: #0b3a63;
+  --primary-soft: #e0f2fe;
+  --accent-red: #b91c1c;
+  --accent-red-soft: #fee2e2;
+  --amber-bg: #fffbeb;
+  --amber-border: #fcd34d;
+  --amber-text: #92400e;
+  --green-bg: #ecfdf5;
+  --green-text: #065f46;
+  --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --font-sans: "Segoe UI", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, sans-serif;
+  --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #991b1b, #0f4c81);
+  color: #fff;
+  font-weight: 800;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.app-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Workspace Layout */
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1.25fr) minmax(340px, 0.95fr);
+  gap: 16px;
+  padding: 16px 20px 24px;
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* Buttons */
+.btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.05s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--surface-subtle);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-subtle);
+  color: var(--text);
+}
+
+.btn-danger-text {
+  color: var(--accent-red);
+}
+
+.btn-danger-text:hover {
+  background: var(--accent-red-soft);
+  color: var(--accent-red);
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.icon-btn:hover {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 78px;
+}
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.search-input,
+.text-input,
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.search-input:focus,
+.text-input:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.12);
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.filter-chip {
+  border: 1px solid var(--border-strong);
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.filter-chip:hover {
+  background: #e2e8f0;
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.template-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--surface-subtle);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 11px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all 0.15s;
+}
+
+.template-btn:hover {
+  background: #e2e8f0;
+}
+
+.template-btn.active {
+  background: var(--primary-soft);
+  border-color: #7dd3fc;
+}
+
+.template-btn-cat {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.template-btn-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.template-btn.active .template-btn-name {
+  color: var(--primary);
+}
+
+.template-btn-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.category-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.category-pill.cat-RBC { background: #fee2e2; color: #991b1b; }
+.category-pill.cat-Coagulation { background: #fef3c7; color: #92400e; }
+.category-pill.cat-Leukemia { background: #ede9fe; color: #5b21b6; }
+.category-pill.cat-Lymphoma { background: #fce7f3; color: #9d174d; }
+.category-pill.cat-Emergency { background: #ffedd5; color: #9a3412; }
+.category-pill.cat-Other { background: #e0f2fe; color: #075985; }
+
+/* High-risk Banner & DDx Box */
+.banner-alert {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.ddx-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ddx-summary {
+  padding: 9px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+  user-select: none;
+  background: #f1f5f9;
+}
+
+.ddx-summary:hover {
+  background: #e2e8f0;
+}
+
+.ddx-content {
+  margin: 0;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+}
+
+/* Center Builder Pane */
+.builder-pane {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pane-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.disease-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.disease-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.disease-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.builder-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Checklist Items */
+.checklist-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.check-item.checked {
+  border-color: #bae6fd;
+  background: #fafdff;
+}
+
+.check-item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.check-item input[type="checkbox"] {
+  margin-top: 4px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.check-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.check-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.check-item-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.tag-optional {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tag-default {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tag-emergency {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.check-item-text {
+  font-size: 13.5px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+.check-item:not(.checked) .check-item-text {
+  color: var(--text-muted);
+}
+
+.check-item-edit-area {
+  width: 100%;
+  margin-top: 4px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.check-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.item-note {
+  margin-top: 8px;
+  margin-left: 26px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--amber-text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Add Item Bar */
+.add-item-bar {
+  display: flex;
+  gap: 8px;
+}
+
+/* Footer Options */
+.footer-options-card {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-options-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.footer-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.footer-check-row input[type="checkbox"] {
+  margin-top: 3px;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.footer-check-content {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Right Pane */
+.right-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 78px;
+  max-height: calc(100vh - 94px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hint-text {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.format-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.mini-select {
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.preview-textarea {
+  width: 100%;
+  min-height: 290px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
+  background: #fcfcfd;
+  resize: vertical;
+  outline: none;
+}
+
+.preview-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.12);
+}
+
+.preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-copy {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.btn-copy kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+/* Clinical Calculator & Risk Index Hub */
+.calc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-hub-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calc-hub-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.calc-hub-title-row h3 {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.calc-count-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.calc-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.calc-search-input {
+  width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 6px 28px 6px 10px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface-subtle);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.calc-search-input:focus {
+  background: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.12);
+}
+
+.calc-search-clear {
+  position: absolute;
+  right: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.calc-search-clear:hover {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+.calc-rec-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 11.5px;
+}
+
+.calc-rec-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.calc-rec-chip {
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.calc-rec-chip:hover,
+.calc-rec-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.calc-picker-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 92px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.calc-pill {
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.calc-pill:hover {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+.calc-pill.active {
+  background: var(--primary-soft);
+  border-color: #7dd3fc;
+  color: var(--primary);
+}
+
+.calc-empty-search {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 6px 0;
+}
+
+.calc-body-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.calc-active-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.calc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calc-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.calc-check-row input[type="checkbox"] {
+  margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.calc-check-row small {
+  color: var(--text-muted);
+}
+
+.calc-check-divider {
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.calc-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field small {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.calc-result-box {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+}
+
+.calc-interp {
+  margin: 6px 0 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.calc-insert-btn {
+  width: 100%;
+  margin-top: 2px;
+}
+
+.calc-placeholder {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 6px 0;
+}
+
+.dose-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.dose-row:last-child {
+  border-bottom: none;
+}
+
+.dose-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dose-val {
+  color: var(--primary);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.risk-badge,
+.cci-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.risk-high,
+.cci-low {
+  background: var(--accent-red-soft);
+  color: var(--accent-red);
+}
+
+.risk-mid {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.risk-low,
+.cci-ok {
+  background: var(--green-bg);
+  color: var(--green-text);
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal-dialog {
+  background: var(--surface);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-footer {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.modal-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0f172a;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 60;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1120px) {
+  .workspace {
+    grid-template-columns: 220px 1fr;
+  }
+  .right-pane {
+    grid-column: 1 / -1;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .sidebar {
+    position: static;
+  }
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-badge" aria-hidden="true">H</div>
+      <div>
+        <h1 class="app-title">血液科照會罐頭文字系統</h1>
+        <p class="app-subtitle">Hematology Consultation Helper · 20 大血液科照會公版 · 含實證指引與 Risk Index</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnExport" class="btn btn-ghost" title="匯出所有模板為 JSON 檔案，方便分享給住院醫師">匯出模板</button>
+      <button id="btnImport" class="btn btn-ghost" title="匯入先前備份的 JSON 模板">匯入模板</button>
+      <input type="file" id="importFileInput" accept=".json" hidden />
+      <button id="btnResetAll" class="btn btn-ghost btn-danger-text" title="恢復為系統預設模板">重設預設</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- 左側：疾病模板清單 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <input type="text" id="templateSearch" class="search-input" placeholder="搜尋疾病、檢驗或藥物..." />
+        <div id="categoryFilter" class="category-filter" role="group" aria-label="分類篩選">
+          <button type="button" class="filter-chip active" data-cat="ALL">全部</button>
+          <button type="button" class="filter-chip" data-cat="Coagulation">凝血/Plt</button>
+          <button type="button" class="filter-chip" data-cat="RBC">RBC</button>
+          <button type="button" class="filter-chip" data-cat="Leukemia">白血病</button>
+          <button type="button" class="filter-chip" data-cat="Lymphoma/MM">淋巴/MM</button>
+          <button type="button" class="filter-chip" data-cat="MPN/Other">MPN/他</button>
+          <button type="button" class="filter-chip" data-cat="Emergency">急症/移植</button>
+        </div>
+        <button id="btnNewTemplate" class="btn btn-primary btn-sm">+ 新增自訂模板</button>
+      </div>
+      <div id="templateList" class="template-list" role="tablist" aria-label="疾病照會模板"></div>
+    </aside>
+
+    <!-- 中間：互動式勾選與編輯區 -->
+    <section class="builder-pane">
+      <div class="pane-header">
+        <div>
+          <div class="disease-title-row">
+            <h2 id="currentDiseaseName" class="disease-name">Anemia</h2>
+            <span id="currentDiseaseCategory" class="category-pill">RBC</span>
+          </div>
+          <p id="currentDiseaseSubtitle" class="disease-subtitle">貧血初步評估</p>
+        </div>
+        <div class="builder-toolbar">
+          <button id="btnSelectCore" class="btn btn-secondary btn-sm" title="只勾選預設核心項目">預設核心</button>
+          <button id="btnSelectAll" class="btn btn-secondary btn-sm">全選</button>
+          <button id="btnClearAll" class="btn btn-secondary btn-sm">全不選</button>
+          <button id="btnDeleteTemplate" class="btn btn-ghost btn-sm btn-danger-text" hidden>刪除此模板</button>
+        </div>
+      </div>
+
+      <!-- 高風險內部警示 Banner -->
+      <div id="bannerAlertBox" class="banner-alert" hidden></div>
+
+      <!-- 臨床鑑別診斷 / 診斷標準參考折疊區 -->
+      <details id="ddxDetails" class="ddx-box" hidden>
+        <summary class="ddx-summary">
+          <span>臨床實證參考：診斷標準 / 分級分期 & Risk Index / 額外檢查 / 初始治療（展開檢視，不會複製）</span>
+        </summary>
+        <pre id="ddxContent" class="ddx-content"></pre>
+      </details>
+
+      <div id="checklistContainer" class="checklist-container"></div>
+
+      <div class="add-item-bar">
+        <input type="text" id="newItemInput" class="text-input" placeholder="新增自訂照會項目到此疾病模板（Enter 加入）..." />
+        <button id="btnAddItem" class="btn btn-secondary">新增項目</button>
+      </div>
+
+      <!-- 結尾固定/選用文字區 -->
+      <div class="footer-options-card">
+        <div class="footer-options-title">結尾固定 / 選用文字</div>
+        <label class="footer-check-row">
+          <input type="checkbox" id="chkGmAdmission" />
+          <div class="footer-check-content">
+            <span class="tag tag-optional">選擇性</span>
+            <span id="gmAdmissionLabel">We will arrange GM (7BC, 14A, 5E3, 5W1) admission for the patient, please also contact 7AD for admission.</span>
+          </div>
+        </label>
+        <label class="footer-check-row">
+          <input type="checkbox" id="chkClosing" checked />
+          <div class="footer-check-content">
+            <span class="tag tag-default">預設附上</span>
+            <span id="closingLabel">Please feel free to contact us for further discussion. Thanks for your consultation.</span>
+          </div>
+        </label>
+        <label class="footer-check-row">
+          <input type="checkbox" id="chkIncludeRef" />
+          <div class="footer-check-content">
+            <span class="tag">選用</span>
+            <span>附上 Reference（ASH-SAP / Wintrobe's / NCCN / IDSA 等）</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- 右側：即時預覽複製 + 臨床計算工具 -->
+    <aside class="right-pane">
+      <!-- 預覽與複製卡片 -->
+      <div class="card preview-card">
+        <div class="card-header">
+          <div>
+            <h3>照會文字預覽</h3>
+            <span class="hint-text">可直接微調文字，勾選項目自動重新編號</span>
+          </div>
+          <div class="format-controls">
+            <select id="outputModeSelect" class="mini-select" aria-label="輸出模式">
+              <option value="plan">僅 Plan / Suggestion</option>
+              <option value="full">完整照會公版 (含PE)</option>
+            </select>
+            <select id="listStyleSelect" class="mini-select" aria-label="清單格式">
+              <option value="number">1. 2. 3.</option>
+              <option value="dash">- 條列</option>
+            </select>
+          </div>
+        </div>
+
+        <textarea id="previewTextarea" class="preview-textarea" spellcheck="false"></textarea>
+
+        <div class="preview-actions">
+          <button id="btnSyncPreview" class="btn btn-ghost btn-sm" title="捨棄手動微調，重新依左側勾選產生">重新同步</button>
+          <button id="btnCopy" class="btn btn-primary btn-copy">
+            <span>一鍵複製照會文字</span>
+            <kbd>Ctrl+Shift+C</kbd>
+          </button>
+        </div>
+      </div>
+
+      <!-- 臨床快速計算工具 & Risk Index -->
+      <div id="calcHubContainer" class="card calc-card"></div>
+    </aside>
+  </main>
+
+  <!-- 新增模板 Modal -->
+  <div id="newTemplateModal" class="modal-backdrop" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h3 id="modalTitle">新增自訂疾病模板</h3>
+        <button id="btnCloseModal" class="icon-btn" aria-label="關閉">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span>疾病名稱 (英文/縮寫) *</span>
+          <input type="text" id="newTplName" placeholder="例如 DIC / TTP / Polycythemia Vera" />
+        </label>
+        <label class="field">
+          <span>疾病中文翻譯</span>
+          <input type="text" id="newTplSubtitle" placeholder="例如 瀰漫性血管內凝血" />
+        </label>
+        <label class="field">
+          <span>分類</span>
+          <select id="newTplCategory">
+            <option value="Coagulation">Coagulation</option>
+            <option value="RBC">RBC</option>
+            <option value="Leukemia">Leukemia</option>
+            <option value="Lymphoma/MM">Lymphoma / MM</option>
+            <option value="MPN/Other">MPN / Other</option>
+            <option value="Emergency">Emergency</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>初始照會項目（每行一項）</span>
+          <textarea id="newTplItems" rows="6" placeholder="每行輸入一條照會建議..."></textarea>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelModal" class="btn btn-ghost">取消</button>
+        <button id="btnSaveNewTemplate" class="btn btn-primary">建立模板</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 通知 -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+// 血液科照會罐頭文字預設模板資料（共 20 項完整疾病模板，含 Coagulation 類別與實證文獻整理）
+// 結構說明：
+// - id, name, subtitle, category
+// - bannerAlert: 置頂高風險/內部警示（不會複製到病歷）
+// - ddxNote: 結構化臨床知識庫【診斷標準 / 分級分期 & Risk Index / 額外檢查 / 初始治療與科內備忘】
+// - impression: 預設 Impression 文字（完整公版模式使用）
+// - peTemplate: "standard" | "leukemia"
+// - references: 最新文獻與指引出處
+// - items: 照會建議項目陣列（note 為內部備忘，不會複製到病歷）
+
+window.PE_TEMPLATES = {
+  standard: `[PE] (待訪視)
+Consciousness: alert and oriented (GCS: E4V5M6)
+Conjunctiva: not pale, sclera: anicteric
+Oral cavity: no ulcer, no thrush, no gingival bleeding/hypertrophy
+Breath sound: bilateral clear
+Abdomen: soft, normoactive bowel sound, no tenderness; liver/spleen impalpable
+Extremities: warm, no pitting edema, no hemarthrosis/hematoma
+Skin: no rash, no petechiae/ecchymosis, no wound`,
+
+  leukemia: `[PE] (待訪視)
+GCS: E4V5M6
+HEENT:
+  - Head: trauma (-), scar (-)
+  - Eye & Ear: pale conjunctiva (-), icteric sclera (-)
+  - Mouth: petechiae (-), thrush (-), gingival hypertrophy (-)
+  - Neck: supple, lymphadenopathy (-), JVE (-)
+  - Axillary lymph nodes: (-)
+Chest: symmetric expansion, bilateral clear breath sounds, wheezing (-)
+Abdomen: soft, normoactive bowel sound, tenderness (-), hepatomegaly (-), splenomegaly (-), mass (-)
+Limbs: warm, pitting edema (-)
+Skin: petechiae (-), ecchymosis (-), rash (-)
+
+[Hemograms]
+WBC (___ K/uL), Hb (___ g/dL), PLT (___ K/uL), Normoblast (___ /100)
+Blast (___%), Promyl (___%), Myelo (___%), Meta (___%), Band (___%), Seg (___%), Eos (___%), Baso (___%), Mono (___%), Lym (___%), Aty.Lym (___%), PlasmaCell (___%)
+[Biochemistry]
+CRE (___ mg/dL), Na (___), K (___), LDH (___ U/L), Bil-T/D (___/___), ALT (___), Uric acid (___ mg/dL)`
+};
+
+window.DEFAULT_TEMPLATES = [
+  // ==================== COAGULATION (含 ITP + 5 大凝血主題) ====================
+  {
+    id: "itp",
+    name: "Thrombocytopenia (ITP)",
+    subtitle: "免疫性血小板缺乏紫斑症",
+    category: "Coagulation",
+    peTemplate: "standard",
+    impression: "1. Severe thrombocytopenia, suspect immune thrombocytopenia (ITP)",
+    references: [
+      "ASH 2019 Guidelines for Immune Thrombocytopenia (Blood Adv 2019)",
+      "International Consensus Report on Primary ITP (Blood Adv 2019)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• 排除性診斷：孤立性血小板 < 100 k/uL，且排除其他次發性原因（DIC、TMA/TTP、藥物/HIT、感染、自體免疫、肝脾腫大、骨髓病變、假性血小板低下）。
+• 1-hr CCI < 10,000 支持免疫性血小板破壞。
+
+【分期與風險分級】
+• Newly diagnosed (< 3 months) / Persistent (3-12 months) / Chronic (> 12 months)。
+• 出血風險分級：PLT < 20-30 k/uL 或合併黏膜出血（口腔血泡 wet purpura 為 ICH 高風險警訊）、抗凝/抗血小板藥物使用、高齡。
+
+【額外檢查重點】
+• 務必看 PB smear 排除 platelet clumping（假性低下）及 schistocytes（TMA）。
+• 次發性原因：HIV、HCV、HBV、H. pylori（尿素呼氣/糞便抗原）、ANA/APS、甲狀腺功能、定量 IgG/A/M（排除 CVID）。
+• 年齡 > 60 歲或合併其他血球異常時建議 BM study (A+B+C) 排除 MDS/骨髓腫瘤。
+
+【初始治療】
+• 適應症：PLT < 30 k/uL（無症狀 < 20-30 k/uL 視出血風險）或有活動性出血。
+• 第一線：Dexamethasone 40 mg PO/IV QD × 4 days（起效快）或 Prednisolone 1 mg/kg/day（最多 2-3 週後逐步減量，避免長期類固醇）。
+• 危及生命出血：IVIG 1 g/kg/day × 2 days + 高劑量類固醇 + 血小板輸注。`,
+    items: [
+      {
+        id: "itp-1",
+        tag: "Transfusion",
+        text: "Follow CBC QOD and component therapy with \"減白加電血品\" Plt 12u stat to keep platelet count > 10 k/uL (or > 20-30 k/uL if active bleeding).",
+        defaultChecked: true
+      },
+      {
+        id: "itp-2",
+        tag: "Lab",
+        text: "Check baseline thrombocytopenia workup (preferably before transfusion/IVIG):\n  - CBC/DC (central), PB smear, Bil-T, LDH, IgG/IgA/IgM, direct/indirect Coombs test, PT/aPTT, D-dimer, DIC profile\n  - HIV combo test, HBsAg, anti-HCV, EBV, and Helicobacter pylori test (UBT or stool Ag)\n  - ANA, anti-dsDNA, RF, C3, C4, anti-ENA screen, anti-phospholipid IgG/IgM, anti-cardiolipin IgG/IgM, anti-beta2 glycoprotein 1 IgG/IgM, DRVVT",
+        defaultChecked: true,
+        note: "提醒：僅 CBC 需於輸血後 1 小時抽以算 CCI；Coombs/IgG/自體免疫建議於輸血或 IVIG 前抽血較準確。"
+      },
+      {
+        id: "itp-2b",
+        tag: "Lab",
+        text: "Check 血小板 HPA 抗體及 HLA Class I 抗體篩檢 (optional, if platelet refractoriness is suspected).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "itp-3",
+        tag: "Imaging",
+        text: "Arrange CXR to exclude pulmonary tuberculosis and mediastinal lymphadenopathy.",
+        defaultChecked: true
+      },
+      {
+        id: "itp-4",
+        tag: "Imaging",
+        text: "Arrange abdominal echo to exclude splenic sequestration of platelets or chronic liver disease.",
+        defaultChecked: true
+      },
+      {
+        id: "itp-5",
+        tag: "CCI",
+        text: "Calculate 1-hr CCI:\n  - Follow CBC 1 hr after platelet transfusion\n  - Corrected count increment (CCI) = [post-transfusion platelet increment (/uL) x BSA (m2)] / [number of platelets transfused (x 10^11)] (each single donor platelet 12u = 3 x 10^11 platelets)\n  - If 1-hr CCI < 10,000, ITP-related platelet consumption is favored.",
+        defaultChecked: true,
+        note: "可用右側「1-hr CCI」計算器算出後一鍵插入照會預覽。"
+      },
+      {
+        id: "itp-6",
+        tag: "Treatment",
+        text: "For suspected ITP:\n  - Give dexamethasone 40 mg PO/IV QD x 4 days (or Rinderon 40 mg QD x 4d; elderly may use 20 mg QD x 4d; or Solu-Medrol 1 mg/kg/day IV)\n  - Monitor finger-stick blood glucose and give PPI during steroid therapy\n  - Inform patient/family of the risk of severe bleeding (such as ICH or GI bleeding).",
+        defaultChecked: true
+      },
+      {
+        id: "itp-6b",
+        tag: "Discharge",
+        text: "If PLT > 20-30 k/uL and vital signs are stable without active bleeding after 1-2 days of IV steroid, may shift to oral Prednisolone (1 mg/kg/day), discharge, and arrange hematology OPD follow-up.",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "itp-7",
+        tag: "Emergency",
+        text: "Give IVIG for life-threatening bleeding:\n  - Premedication: Vena 1 amp IV before IVIG infusion\n  - IVIG 1 g/kg QD x 2 days (第一瓶 run 50 mL/hr，第二瓶 run 100 mL/hr，若無不適可上調流速至 200 mL/hr).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "itp-8",
+        tag: "BM Study",
+        text: "BM study (A+B+C) is suggested in elderly (> 60 y/o) or atypical ITP patient to exclude BM neoplasm / MDS.",
+        defaultChecked: false,
+        optional: true
+      }
+    ]
+  },
+
+  {
+    id: "thrombocytopenia-survey",
+    name: "Thrombocytopenia Survey",
+    subtitle: "血小板低下鑑別診斷",
+    category: "Coagulation",
+    peTemplate: "standard",
+    bannerAlert: "急症排除優先順序：1. 假性低下 (PB smear) → 2. TMA/TTP (schistocytes + PLASMIC) → 3. HIT (4Ts) → 4. Overt DIC (ISTH) → 5. Drug / Infection / Liver / ITP / BM。",
+    impression: "1. Thrombocytopenia (PLT: ___ k/uL), etiology to be determined",
+    references: [
+      "ASH 2018 Guidelines for HIT (Blood Adv 2018)",
+      "ISTH 2020 Guidelines for TTP (JTH 2020)",
+      "ISTH Overt DIC Diagnostic Criteria (Thromb Haemost 2001)"
+    ],
+    ddxNote: `【診斷與急症 Risk Index】
+1. 4Ts Score (HIT, 0-8 分)：Thrombocytopenia (0-2) + Timing 5-10d (0-2) + Thrombosis (0-2) + oTher causes (0-2)
+   • 0-3 低風險 (NPV ~99%)；4-5 中風險；6-8 高風險 → ≥4 分須立刻停所有 heparin 並改非肝素抗凝 (argatroban/fondaparinux/DOAC) + 驗 anti-PF4/heparin Ab！
+2. PLASMIC Score (TTP, 0-7 分)：Plt <30K、Hemolysis、No active cancer、No transplant、MCV <90、INR <1.5、Cr <2.0（各 1 分）
+   • 0-4 低；5 中；6-7 高風險 (ADAMTS13 <10% 機率高) → 立刻抽 ADAMTS13 並啟動血漿置換 (TPE) + 類固醇！
+3. ISTH Overt DIC Score：Plt (<100K: 1, <50K: 2) + D-dimer (中度↑: 2, 高度↑: 3) + PT 延長 (3-6s: 1, >6s: 2) + Fibrinogen (<100: 1)
+   • ≥5 分符合 Overt DIC；<5 分非顯性 DIC，需追蹤。
+
+【額外檢查】
+• 懷疑 EDTA 假性血小板低下：加抽 Citrate 管（藍頭管）重測 PLT 並看 PB smear。
+• 藥物回顧：Heparin、vancomycin、piperacillin/tazobactam、linezolid、TMP-SMX、valproate、carbamazepine、化療藥。
+
+【初始治療】
+• 預防性輸血閾值：無出血 PLT > 10 k/uL；發燒/敗血症/小處置 > 20 k/uL；重大手術/腰穿 > 50 k/uL；CNS 出血/神經外科 > 100 k/uL。
+• 注意：TTP 與 HIT 原則上「避免」預防性輸血小板（除非危及生命出血），以免惡化血栓！`,
+    items: [
+      {
+        id: "tcp-1",
+        tag: "Smear",
+        text: "Check PB smear immediately (and repeat PLT with citrate/blue-top tube if platelet clumping is suspected) to exclude pseudothrombocytopenia and schistocytes (TMA/TTP).",
+        defaultChecked: true
+      },
+      {
+        id: "tcp-2",
+        tag: "DIC/TMA",
+        text: "Check PT/aPTT, fibrinogen, D-dimer, FDP (calculate ISTH DIC score), reticulocyte count, LDH, haptoglobin, Bil-T/D, and direct/indirect Coombs test.",
+        defaultChecked: true
+      },
+      {
+        id: "tcp-3",
+        tag: "HIT",
+        text: "Review all heparin exposure (including UFH flushes/locks and LMWH) and calculate 4Ts score. If 4Ts ≥ 4, stop all heparin immediately, check anti-PF4/heparin Ab, and start non-heparin anticoagulation.",
+        defaultChecked: true
+      },
+      {
+        id: "tcp-4",
+        tag: "TTP",
+        text: "If MAHA (schistocytes + hemolytic anemia + thrombocytopenia) is present, calculate PLASMIC score. If ≥ 5-6, check ADAMTS13 activity/inhibitor (before plasma) and prepare urgent therapeutic plasma exchange (TPE) + corticosteroid.",
+        defaultChecked: false,
+        optional: true,
+        note: "疑似 TTP/HIT 原則上避免預防性輸血小板，以免加重微血管血栓！"
+      },
+      {
+        id: "tcp-5",
+        tag: "Etiology",
+        text: "Review culprit medications (antibiotics, anticonvulsants, NSAIDs, herbs), check viral serologies (HIV, HBV, HCV), vitamin B12/folate, liver function, and arrange abdominal echo for splenomegaly/cirrhosis.",
+        defaultChecked: true
+      },
+      {
+        id: "tcp-6",
+        tag: "Transfusion",
+        text: "Avoid unnecessary invasive procedures and hold antiplatelets/anticoagulants if bleeding risk is high. Transfuse \"減白加電血品\" Plt 12u to keep PLT > 10 k/uL (or > 20-50 k/uL if active bleeding/procedures), ONLY after excluding TTP/HIT.",
+        defaultChecked: true
+      },
+      {
+        id: "tcp-7",
+        tag: "BM Study",
+        text: "If pancytopenia, circulating blasts/dysplasia, or unexplained persistent thrombocytopenia is present, contact us for bone marrow study (A+B+C).",
+        defaultChecked: false,
+        optional: true
+      }
+    ]
+  },
+
+  {
+    id: "acquired-hemophilia-a",
+    name: "Acquired Hemophilia A",
+    subtitle: "後天性 A 型血友病",
+    category: "Coagulation",
+    peTemplate: "standard",
+    bannerAlert: "AHA 致命出血急症：嚴禁肌肉注射及非必要侵入性處置！出血優先使用 Bypassing agents (rFVIIa / aPCC)，且確診後無論出血輕重均須立即啟動免疫抑制治療清除抗體！",
+    impression: "1. Isolated prolonged aPTT with bleeding, suspect acquired hemophilia A (AHA)",
+    references: [
+      "2020 International Recommendations on Diagnosis and Treatment of AHA (Tiede et al., Haematologica 2020)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準 (2020 International Recommendations)】
+• 臨床：高齡或產後病人突發大片皮下瘀青、肌肉血腫、黏膜/後腹腔出血，無既往/家族出血史。
+• 檢驗：孤立性 aPTT 延長（PT、Plt 正常）→ 1:1 mixing test（特別是 37°C 孵育 1-2 小時後）無法矯正（time- & temperature-dependent）→ FVIII activity 顯著低下（常 < 1-5%）+ Nijmegen-Bethesda assay 測得 FVIII inhibitor (> 0.6 BU/mL)。
+• 需排除 Lupus anticoagulant（會干擾 one-stage FVIII assay，必要時做 chromogenic FVIII assay 或稀釋法）。
+
+【預後分級 (GTH-AH 01/2010 Risk Stratification)】
+• 影響緩解率與死亡率的關鍵因子：
+  - Baseline FVIII < 1 IU/dL 或 Inhibitor titer ≥ 20 BU/mL → 緩解時間長、預後較差，建議第一線即合併 Cyclophosphamide 或 Rituximab。
+  - Baseline FVIII ≥ 1 IU/dL 且 Inhibitor < 20 BU/mL → 第一線可單用類固醇。
+• 注意：出血嚴重度與 FVIII 數值或抗體效價「不成正比」，即使低效價也可能致命出血！
+
+【額外檢查】
+• 約 50% 為自發性，50% 須積極找潛在病因：惡性腫瘤（實體癌/血液腫瘤，安排 CT/腫瘤評估）、自體免疫疾病（SLE/RA/Sjögren）、產後、藥物。
+
+【初始治療（雙軌並行）】
+1. 止血治療（僅用於活動性出血或手術前）：
+   - 第一線 Bypassing agents：rFVIIa (NovoSeven) 90 mcg/kg IV q2-3h，或 aPCC (FEIBA) 50-100 U/kg IV q8-12h（max 200 U/kg/day），或 Recombinant porcine FVIII (rpFVIII)。
+   - 人類 FVIII 濃縮劑通常無效（會被抗體中和）。使用 aPCC 時併用 tranexamic acid 須小心血栓風險。
+2. 抗體清除（Immunosuppressive therapy, IST，確診即啟動）：
+   - Prednisolone 1 mg/kg/day PO（若 FVIII < 1% 或 titer ≥ 20 BU，合併 Cyclophosphamide 1.5-2 mg/kg/day PO 或 Rituximab 375 mg/m² QW × 4）。
+   - 嚴密監測感染（感染為 AHA 主要死因之一）！`,
+    items: [
+      {
+        id: "aha-1",
+        tag: "Lab",
+        text: "Check PT, aPTT, fibrinogen, thrombin time (TT), immediate and 2-hr incubated (37°C) 1:1 aPTT mixing study, Factor VIII activity, Factor VIII inhibitor titer (Bethesda assay), and lupus anticoagulant (DRVVT) to confirm AHA and exclude LA.",
+        defaultChecked: true
+      },
+      {
+        id: "aha-2",
+        tag: "Emergency",
+        text: "Strict bleeding precautions: avoid all IM injections, arterial punctures, central line placement, and unnecessary invasive procedures; hold all antiplatelets and anticoagulants immediately.",
+        defaultChecked: true
+      },
+      {
+        id: "aha-3",
+        tag: "Hemostasis",
+        text: "For active or severe bleeding, initiate first-line bypassing agent immediately (do NOT rely on human FVIII or FFP):\n  - rFVIIa (NovoSeven) 90 mcg/kg IV Q2-3H until hemostasis achieved, OR\n  - aPCC (FEIBA) 50-100 U/kg IV Q8-12H (max 200 U/kg/day; avoid concurrent tranexamic acid if high thrombotic risk).",
+        defaultChecked: true,
+        note: "請立即通知血液科 VS 並確認院內 NovoSeven / FEIBA 庫存與健保事前/緊急用藥流程。"
+      },
+      {
+        id: "aha-4",
+        tag: "IST",
+        text: "Initiate immunosuppressive therapy upon confirmation of AHA for inhibitor eradication:\n  - Prednisolone 1 mg/kg/day PO (or equivalent IV steroid)\n  - If baseline FVIII < 1% or inhibitor titer ≥ 20 BU/mL: consider adding Cyclophosphamide 1.5-2 mg/kg/day PO or Rituximab 375 mg/m² IV QW x 4 doses (discuss with hematology VS).",
+        defaultChecked: true,
+        note: "使用免疫抑制劑期間感染死亡率高，須密切監測感染、血糖並給予胃藥/PJP 預防評估。"
+      },
+      {
+        id: "aha-5",
+        tag: "Survey",
+        text: "Survey underlying etiology (~50% secondary): check autoimmune profiles (ANA, RF, anti-ENA), viral hepatitis screening (HBsAg, Anti-HBc, Anti-HCV before IST), and age-appropriate malignancy survey (CXR, abdominal echo/CT).",
+        defaultChecked: true
+      },
+      {
+        id: "aha-6",
+        tag: "Monitoring",
+        text: "Closely monitor Hb (transfuse PRBC to keep Hb > 8.0 g/dL), hematoma size/compartment syndrome, and follow aPTT & FVIII activity weekly after starting IST.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "prolonged-pt-aptt",
+    name: "Prolonged PT / aPTT Survey",
+    subtitle: "凝血時間延長鑑別",
+    category: "Coagulation",
+    peTemplate: "standard",
+    impression: "1. Prolonged PT / aPTT, etiology to be determined",
+    references: [
+      "CLSI H60 / ISTH Mixing Study Guidance",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【系統性鑑別架構】
+1. 先排除檢體/藥物干擾：
+   • 採血量不足（citrate 比例過高）、高 Hct (>55%)、由含 heparin 管路抽血（驗 TT 與 Reptilase time：heparin 會使 TT 延長但 Reptilase 正常）。
+   • DOACs 干擾：Dabigatran（aPTT/TT 延長）、Xa inhibitors（PT/aPTT 可輕中度延長）。
+
+2. 依延長型態分類：
+   • 孤立性 PT 延長：Factor VII 缺乏、早期 Vitamin K 缺乏、Warfarin、輕度肝病。
+   • 孤立性 aPTT 延長：
+     - 做 1:1 Mixing Study（立即 + 37°C 孵育 2 小時）：
+       ▸ 矯正 (Corrected)：凝血因子缺乏 → 驗 FVIII, FIX, FXI（會出血）；FXII, Prekallikrein, HMWK（不出血！）；vWD（連帶 FVIII 降）。
+       ▸ 不矯正 (Not corrected)：抑制物 → Lupus anticoagulant（血栓傾向，不出血！）vs 特定因子抗體（如 Acquired Hemophilia A / FVIII inhibitor，致命出血！）。
+   • PT 與 aPTT 同時延長：
+     - 共同路徑因子缺乏（FX, FV, FII, Fibrinogen）或多重因子缺乏：肝衰竭（FV 降、FVIII 正常/高）、嚴重 Vitamin K 缺乏（FV 正常）、DIC（D-dimer↑, Fibrinogen↓, Plt↓）、抗凝血劑過量、大量輸血稀釋。
+
+【初始治療】
+• Vitamin K 缺乏：Vit K1 10 mg IV/PO QD × 3 days（嚴重出血加 4F-PCC 或 FFP）。
+• 注意：無活動性出血或手術需求時，單純輕度 INR 延長（特別是肝硬化）不建議常規輸 FFP！`,
+    items: [
+      {
+        id: "coag-1",
+        tag: "Pre-analytic",
+        text: "Exclude pre-analytical errors and drug interference: redraw coagulation sample via peripheral venipuncture (avoid heparinized lines), review anticoagulants (warfarin, heparin, LMWH, DOACs), and check liver function & nutritional/antibiotic history.",
+        defaultChecked: true
+      },
+      {
+        id: "coag-2",
+        tag: "Basic",
+        text: "Check PT/INR, aPTT, fibrinogen, thrombin time (TT), D-dimer, and CBC/DC.",
+        defaultChecked: true
+      },
+      {
+        id: "coag-3",
+        tag: "Isolated aPTT",
+        text: "For isolated prolonged aPTT: arrange 1:1 aPTT mixing study (both immediate and 2-hr incubated at 37°C).\n  - If corrected: check Factor VIII, IX, XI, XII activity and vWF panel\n  - If NOT corrected: check lupus anticoagulant (DRVVT) and Factor VIII/IX inhibitor (Bethesda assay); if heparin contamination suspected, check Reptilase time.",
+        defaultChecked: true
+      },
+      {
+        id: "coag-4",
+        tag: "Isolated PT",
+        text: "For isolated prolonged PT: evaluate vitamin K deficiency, warfarin effect, early liver dysfunction, or Factor VII deficiency (check Factor VII activity if refractory to vitamin K).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "coag-5",
+        tag: "Both PT/aPTT",
+        text: "For combined PT and aPTT prolongation: evaluate DIC (ISTH score), severe liver disease (check Factor V & VIII: FV low + FVIII normal/high favors liver disease), severe vitamin K deficiency, or common pathway factor deficiency (Factor II, V, X, fibrinogen).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "coag-6",
+        tag: "Treatment",
+        text: "If vitamin K deficiency is suspected, give Vitamin K1 10 mg IV (slow infusion) or PO QD x 3 days and recheck PT/aPTT. For active major bleeding with coagulopathy, transfuse FFP 10-15 mL/kg (or 4F-PCC if warfarin-related) and cryoprecipitate if fibrinogen < 150 mg/dL.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "bleeding-tendency",
+    name: "Bleeding Tendency Survey",
+    subtitle: "出血傾向評估",
+    category: "Coagulation",
+    peTemplate: "standard",
+    impression: "1. Bleeding tendency, rule out primary vs secondary hemostatic disorder",
+    references: [
+      "ASH / ISTH / NHF / WFH 2021 Guidelines on Diagnosis of vWD (Blood Adv 2021)",
+      "ISTH-BAT Bleeding Assessment Tool (Rodeghiero et al., JTH 2010)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷工具：ISTH-BAT Score（14 項出血表現，0-4 分）】
+• 異常閾值（建議進一步做完整止血檢查）：
+  - 成年男性 ≥ 4 分
+  - 成年女性 ≥ 6 分（18-30 歲 ≥ 5、31-51 歲 ≥ 6、≥ 52 歲 ≥ 7）
+  - 兒童 (< 18 歲) ≥ 3 分
+
+【臨床型態鑑別】
+1. 初級止血異常 (Primary hemostasis: 血小板 / vWD / 血管)：
+   • 表現：黏膜皮膚出血（瘀斑、紫斑、流鼻血、牙齦出血、經血過多）、術後立即出血。
+   • 常見：vWD（最常見遺傳性出血疾病）、血小板功能異常（藥物/尿毒症/Glanzmann/Bernard-Soulier）、ITP。
+2. 次級止血異常 (Secondary hemostasis: 凝血因子)：
+   • 表現：深層肌肉血腫、關節出血 (hemarthrosis)、延遲性術後出血。
+   • 常見：Hemophilia A/B、Acquired hemophilia、肝病、Vit K 缺乏。
+3. PT / aPTT / PLT 皆正常但仍嚴重出血：
+   • 必想：vWD、血小板功能異常、Factor XIII 缺乏（PT/aPTT 正常！需驗 FXIII assay/urea clot solubility）、纖維溶解異常（α2-antiplasmin/PAI-1 缺乏）、結締組織疾病（Ehlers-Danlos / HHT）。
+
+【vWD 診斷重點 (ASH/ISTH 2021)】
+• 篩檢三寶：vWF:Ag、vWF platelet-binding activity (vWF:GPIbM 或 vWF:RCo)、Factor VIII activity。
+• vWF < 30 IU/dL（或 30-50 IU/dL 合併出血史）診斷 vWD；vWF:Act / vWF:Ag < 0.7 偏向 Type 2 vWD（需進一步做 multimer / RIPA）。
+• 注意：vWF 為急性期蛋白，發炎、懷孕、壓力、雌激素皆會使其假性升高！`,
+    items: [
+      {
+        id: "bld-1",
+        tag: "History",
+        text: "Evaluate bleeding phenotype (mucocutaneous vs deep tissue/hemarthrosis, immediate vs delayed post-procedure bleeding), calculate ISTH-BAT score (abnormal: M ≥ 4, F ≥ 6, children ≥ 3), and review family history & medications (NSAIDs, aspirin, antiplatelets, anticoagulants, SSRIs, herbs).",
+        defaultChecked: true
+      },
+      {
+        id: "bld-2",
+        tag: "Screening",
+        text: "Check baseline hemostatic panel: CBC/DC, PB smear (assess platelet size/morphology), PT/INR, aPTT, fibrinogen, thrombin time (TT), liver function, and renal function (uremia impairs platelet function).",
+        defaultChecked: true
+      },
+      {
+        id: "bld-3",
+        tag: "Primary",
+        text: "For mucocutaneous bleeding or suspected vWD/platelet dysfunction: check vWF:Ag, vWF activity (vWF:RCo / vWF:GPIbM), Factor VIII activity, blood type (O type has ~25% lower baseline vWF), and PFA-100 / light transmission platelet aggregometry (stop NSAIDs/antiplatelets 7-10 days prior if feasible).",
+        defaultChecked: true,
+        note: "提醒：vWF 為急性期蛋白，發炎/壓力/懷孕時可能假性正常，若高度懷疑需於穩定期複驗。"
+      },
+      {
+        id: "bld-4",
+        tag: "FXIII",
+        text: "If PT, aPTT, PLT, and vWF panel are all normal despite significant/delayed bleeding or poor wound healing, check Factor XIII activity (or urea clot solubility test).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "bld-5",
+        tag: "Treatment",
+        text: "General hemostatic measures: hold antiplatelets/NSAIDs, consider tranexamic acid (Transamin) 500-1000 mg PO/IV Q8H for mucosal bleeding (avoid in gross hematuria). For confirmed mild Type 1 vWD or mild Hemophilia A, consider DDAVP (desmopressin) trial; for severe bleeding/Type 2B/Type 3 vWD, use vWF/FVIII concentrate.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "thrombophilia-survey",
+    name: "Thrombophilia Survey",
+    subtitle: "血栓體質評估",
+    category: "Coagulation",
+    peTemplate: "standard",
+    bannerAlert: "抽血時機警示：急性血栓期、使用 Warfarin 或 DOAC 期間抽 Protein C / S / Antithrombin / Lupus Anticoagulant 極易偽陽性！原則上僅在「檢驗結果會改變抗凝療程或預防策略」時才檢驗。",
+    impression: "1. Venous / Arterial thromboembolism, for thrombophilia evaluation",
+    references: [
+      "ASH 2023 Guidelines for Management of VTE: Thrombophilia Testing (Middeldorp et al., Blood Adv 2023)",
+      "2023 ACR/EULAR Antiphospholipid Syndrome Classification Criteria",
+      "ISTH Guidance on Anticoagulant Interference in Thrombophilia Testing"
+    ],
+    ddxNote: `【ASH 2023 檢驗適應症原則】
+• 不建議常規檢驗：一般無誘因 VTE（多數本就建議長期抗凝）、重大手術誘發 VTE、一般族群或口服避孕藥前常規篩檢。
+• 建議考慮檢驗情境：
+  1. 非手術性暫時危險因子（如荷爾蒙/懷孕/長途旅行）誘發 VTE，若考慮停用抗凝藥時。
+  2. 不尋常部位血栓（腦靜脈竇 CVST、內臟靜脈 SVT/Budd-Chiari）若考慮停藥或需排除 MPN/PNH。
+  3. 年輕 (< 45-50 歲) 反覆/家族史明顯之 VTE、或疑似 APS（特別是合併動脈血栓或反覆流產，因高風險 APS 首選 Warfarin 而非 DOAC！）。
+
+【東亞族群流病特色】
+• 東亞族群以 **Protein S、Protein C、Antithrombin 缺乏** 為主；歐美常見的 Factor V Leiden 與 Prothrombin G20210A 在台灣/東亞極罕見（< 0.5%），非必要不常規驗。
+
+【抗凝藥物對檢驗的干擾】
+• 急性血栓期：AT、PC、PS 皆可能因消耗假性偏低。
+• Heparin：干擾 AT 與 LA。
+• Warfarin：嚴重降低 PC、PS，干擾 LA（須停藥 ≥ 2 週）。
+• DOACs (Apixaban/Rivaroxaban/Edoxaban/Dabigatran)：嚴重造成 LA 偽陽性，並干擾功能性 AT/PC/PS（須停藥 ≥ 48-72 小時或使用 DOAC-remove 試劑）。
+• 不受藥物影響：aCL IgG/IgM、anti-β2GP1 IgG/IgM、JAK2 V617F、PNH flow cytometry。
+
+【初始治療】
+• 急性 VTE：LMWH / DOAC（若確診高風險/三陽性 APS，建議轉為 Warfarin INR 2-3，避免 DOAC！）。
+• 併發嚴重 AT 缺乏致 heparin resistance 時可補充 AT concentrate 或改用直接凝血酶/Xa 抑制劑。`,
+    items: [
+      {
+        id: "throm-1",
+        tag: "Timing",
+        text: "Assess whether thrombophilia testing will alter anticoagulation duration/choice (per ASH 2023 guidelines). Avoid testing Protein C, Protein S, Antithrombin, and Lupus Anticoagulant during acute thrombosis or active warfarin/DOAC therapy (ideally defer until ≥ 2-4 weeks after stopping anticoagulation, or draw baseline prior to initiating anticoagulants).",
+        defaultChecked: true
+      },
+      {
+        id: "throm-2",
+        tag: "APS",
+        text: "For suspected Antiphospholipid Syndrome (unprovoked VTE, arterial thrombosis, pregnancy morbidity): check Lupus Anticoagulant (DRVVT), anti-cardiolipin IgG/IgM, and anti-beta2 glycoprotein 1 IgG/IgM. (If positive, must repeat ≥ 12 weeks later to confirm persistent APS).",
+        defaultChecked: true,
+        note: "若確診高風險/三陽性 APS，抗凝藥物應優先選用 Warfarin (INR 2-3)，避免使用 DOAC！"
+      },
+      {
+        id: "throm-3",
+        tag: "Inherited",
+        text: "Check inherited thrombophilia panel (at appropriate timing off interfering anticoagulants): Antithrombin III activity, Protein C activity, and Protein S activity/free antigen (note: Factor V Leiden and Prothrombin G20210A are rare in East Asian populations).",
+        defaultChecked: true
+      },
+      {
+        id: "throm-4",
+        tag: "Unusual Site",
+        text: "For splanchnic vein thrombosis (portal/mesenteric/Budd-Chiari) or unexplained cytopenia/hemolysis with thrombosis: check JAK2 V617F mutation (to r/o occult MPN) and PNH flow cytometry (CD55/CD59/FLAER).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "throm-5",
+        tag: "Secondary",
+        text: "Evaluate acquired prothrombotic triggers: age-appropriate occult malignancy screening, nephrotic syndrome (U/A, urine protein), autoimmune disease (ANA), and homocysteine/vitamin B12/folate if arterial/premature thrombosis.",
+        defaultChecked: true
+      },
+      {
+        id: "throm-6",
+        tag: "Treatment",
+        text: "Initiate/maintain therapeutic anticoagulation (DOAC or LMWH; switch to Warfarin with INR 2-3 if high-risk/triple-positive APS is confirmed) for at least 3-6 months, and reassess indefinite anticoagulation based on provoking factors and bleeding risk.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  // ==================== RBC ====================
+  {
+    id: "anemia",
+    name: "Anemia",
+    subtitle: "貧血",
+    category: "RBC",
+    peTemplate: "standard",
+    impression: "1. Anemia (Normocytic / Microcytic / Macrocytic), etiology to be determined",
+    references: [
+      "WHO Haemoglobin Concentrations for Diagnosis of Anaemia",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準與分級】
+• WHO 定義：男性 Hb < 13 g/dL、非懷孕女性 Hb < 12 g/dL、孕婦 < 11 g/dL。
+• 嚴重度分級：輕度 (11-12/13)、中度 (8-10.9)、重度 (< 8 g/dL)。
+
+【核心分類指標】
+• MCV：< 80 fL (Microcytic) / 80-100 fL (Normocytic) / > 100 fL (Macrocytic)。
+• RPI = Retic% × (Hct/45) / Maturation factor (Hct 45-36: 1, 35-26: 1.5, 25-16: 2, <15: 2.5)：
+  - RPI < 2：骨髓生成不足 (hypoproliferative)；RPI ≥ 2：出血或溶血代償。
+• Mentzer Index = MCV / RBC (million)：< 13 偏向 Thalassemia，> 13 偏向 IDA。
+
+【額外檢查重點】
+• IDA：Ferritin < 30 ng/mL（發炎/CKD 時 < 100 且 TSAT < 20% 即視為缺鐵）；男性及停經女性必做 GI 內視鏡排除惡性腫瘤。
+• Thalassemia：Hb electrophoresis (HbA2 > 3.5% 為 β-thal)；α-thal 須基因檢測 (000P1629 自費 3,250)。
+• Macrocytic：B12 (< 200 pg/mL；200-300 驗 MMA & Homocysteine)、Folate、TSH、網狀紅血球、排除 MDS/MM。
+
+【初始治療】
+• 輸血閾值：一般穩定病人 Hb < 7 g/dL（急性冠心症/有症狀貧血可放寬至 < 8 g/dL）。
+• IDA：口服鐵劑（隔日 QOD 吸收率較佳且腸胃副作用少），若吸收不良/不耐受/需快速補鐵改 IV iron。
+• 巨球性貧血：補充 Folate 前務必先確認/同時補 Vit B12，避免惡化神經病變！`,
+    items: [
+      {
+        id: "anemia-1",
+        tag: "Basic",
+        text: "For anemia basic survey: check reticulocyte count, serum iron, ferritin, TIBC (calculate TSAT), Bil-T/D, LDH, haptoglobin, vitamin B12, folic acid, (homocysteine), direct/indirect Coombs test, and stool OB (preferably before transfusion). Calculate reticulocyte production index (RPI).",
+        defaultChecked: true
+      },
+      {
+        id: "anemia-2",
+        tag: "GI",
+        text: "If stool OB is positive (or unexplained IDA in males/postmenopausal females), give PPI and tranexamic acid (Transamin) if active bleeding, and arrange endoscopic evaluation (EGD/colonoscopy).",
+        defaultChecked: true
+      },
+      {
+        id: "anemia-3",
+        tag: "IDA",
+        text: "For iron deficiency anemia: consider checking anti-parietal cell Ab, gastrin, H. pylori, and tissue transglutaminase Ab if refractory; initiate oral iron supplement (or IV iron if intolerant/malabsorption).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "anemia-4",
+        tag: "Thalassemia",
+        text: "For suspected thalassemia (Mentzer index < 13): check Hb electrophoresis for beta-thalassemia (HbA2 > 3.5%). If HbA2 < 3.5%, consider genetic diagnosis of alpha-thalassemia (000P1629 [自費] Genetic diagnosis of alpha-Thalassemia, NTD 3,250).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "anemia-5",
+        tag: "Normocytic",
+        text: "For normocytic anemia survey: check serum EPO, TSH/free T4, and renal/inflammatory markers. If multiple myeloma is suspected, check serum IgA, IgG, IgM, serum free light chain (kappa/lambda), serum IFE, and urine IFE.",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "anemia-6",
+        tag: "Macrocytic",
+        text: "For macrocytic anemia survey: check folic acid, vitamin B12 (add MMA/homocysteine if borderline), TSH/free T4, and review alcohol/drug history. (Always rule out/treat B12 deficiency before giving folic acid alone).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "anemia-7",
+        tag: "Smear",
+        text: "Check PB smear if unexplained cytopenia or suspected hemolysis/hematologic malignancy.",
+        defaultChecked: false,
+        optional: true
+      }
+    ]
+  },
+
+  {
+    id: "hemolytic-anemia",
+    name: "Hemolytic Anemia",
+    subtitle: "溶血性貧血",
+    category: "RBC",
+    peTemplate: "standard",
+    impression: "1. Hemolytic anemia, suspect autoimmune hemolytic anemia (AIHA) / rule out non-immune hemolysis",
+    references: [
+      "First International Consensus Meeting on AIHA (Jäger et al., Blood Rev 2020)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• 溶血四徵：↑Reticulocyte (RPI ≥ 2)、↑LDH、↓Haptoglobin、↑Indirect Bilirubin（血管內溶血另見 Hemoglobinuria/Hemosiderinuria）。
+• 確診 AIHA：Direct Antiglobulin Test (DAT / Direct Coombs) 陽性 + 排除藥物/輸血延遲溶血反應。
+
+【分類與嚴重度】
+1. Warm AIHA (60-70%)：DAT IgG+ (± C3d)；約 50% 次發於淋巴瘤/CLL、自體免疫 (SLE)、感染、藥物。
+2. Cold Agglutinin Disease / Syndrome (CAD/CAS, 20-25%)：DAT C3d+ / IgG-，Cold agglutinin titer ≥ 1:64；留意肢端發紺、Mycoplasma/EBV 或 B-cell clone (MYD88)。
+3. Mixed AIHA / DAT-negative AIHA (5-10%)。
+4. Non-immune：MAHA (TTP/HUS/DIC, schistocytes)、機械瓣膜、PNH、G6PD、先天性紅血球膜/血紅素異常。
+• 嚴重度：Hb < 8 g/dL 且有症狀/快速下降屬重度溶血，需積極治療並注意 VTE 高風險！
+
+【額外檢查】
+• Monospecific DAT (IgG vs C3d)、Cold hemagglutinin titer、G6PD、病毒/自體免疫篩檢、SPEP/IFE、CT 排除淋巴瘤；若 DAT(-) 且血管內溶血，加驗 PNH flow (CD55/CD59/FLAER)。
+
+【初始治療 (2020 International Consensus)】
+• Warm AIHA：Prednisolone 1 mg/kg/day PO（急性重度可先 Pulse Solu-Medrol 250-1000 mg IV QD × 1-3d），反應後於 1-3 週起緩慢減量；嚴重/復發或高齡可提早考慮 Rituximab。
+• Cold AIHA (CAD)：保暖為主！類固醇通常效果差，症狀性溶血第一線為 Rituximab（± Bendamustine）或 Sutimlimab (C1s inhibitor)。
+• 支持療法：Folic acid 1-5 mg/day、住院期間評估 VTE prophylaxis（AIHA 血栓風險高！）、輸血採最相容血品（least incompatible PRBC）慢速輸注。`,
+    items: [
+      {
+        id: "ha-1",
+        tag: "Smear",
+        text: "請緊急檢查室做 PB smear，並聯絡血液科照會醫師判讀 PB smear 玻片（確認是否有 spherocytes、RBC agglutination 或 schistocytes）。",
+        defaultChecked: true
+      },
+      {
+        id: "ha-2",
+        tag: "Lab",
+        text: "Check reticulocyte count, serum iron, ferritin, TIBC, Bil-T/D, LDH, haptoglobin, direct/indirect Coombs test (monospecific IgG/C3d if positive), cold hemagglutinin titer, and G6PD.",
+        defaultChecked: true
+      },
+      {
+        id: "ha-3",
+        tag: "Survey",
+        text: "Survey AIHA etiology: review viral infection (EBV, Mycoplasma, HIV, HBV/HCV) and drug history, check autoimmune profiles (ANA/C3/C4) & SPEP/Ig, and evaluate for underlying lymphoproliferative disorder (CXR/echo/CT).",
+        defaultChecked: true
+      },
+      {
+        id: "ha-4",
+        tag: "Support",
+        text: "Give folic acid 5 mg PO QD for increased erythropoiesis, assess VTE prophylaxis (AIHA carries high thrombotic risk), and keep patient warm if cold agglutinin is suspected. Transfuse least incompatible PRBC slowly only if symptomatic/severe anemia.",
+        defaultChecked: true
+      },
+      {
+        id: "ha-5",
+        tag: "Steroid",
+        text: "For severe/fulminant Warm AIHA: consider pulse steroid with Solu-Medrol 250-1000 mg IV QD for 1-3 days.",
+        defaultChecked: false,
+        optional: true,
+        note: "提醒：Cold AIHA 對類固醇反應差，切勿盲目高劑量類固醇，應優先保暖並與 VS 討論 Rituximab。"
+      },
+      {
+        id: "ha-6",
+        tag: "Steroid",
+        text: "For Warm AIHA: give Prednisolone (Predonine) 1-1.5 mg/kg/day PO, then taper slowly according to response over 1-3 weeks (goal < 20 mg/day for 1 month as maintenance, then taper off).",
+        defaultChecked: false,
+        optional: true
+      }
+    ]
+  },
+
+  // ==================== LEUKEMIA ====================
+  {
+    id: "aml",
+    name: "AML",
+    subtitle: "急性骨髓性白血病",
+    category: "Leukemia",
+    peTemplate: "leukemia",
+    impression: "1. Acute leukemia, favor acute myeloid leukemia (AML)",
+    references: [
+      "ELN 2022 Recommendations for AML (Döhner et al., Blood 2022)",
+      "WHO 5th Edition (2022) & ICC 2022 Myeloid Neoplasms",
+      "NCCN Guidelines: Acute Myeloid Leukemia"
+    ],
+    ddxNote: `【診斷標準 (WHO 2022 / ICC 2022)】
+• 骨髓或周邊血 Myeloblasts ≥ 20%；若帶有特定重現性基因異常（如 t(8;21)、inv(16)、PML-RARA、NPM1、CEBPA 等）則 blasts ≥ 10%（WHO 甚至不限 20%）即可診斷 AML。
+
+【ELN 2022 遺傳風險分層】
+• Favorable：t(8;21) RUNX1-RUNX1T1、inv(16)/t(16;16) CBFB-MYH11、NPM1 mut (無 FLT3-ITD)、bZIP in-frame CEBPA mut。
+• Intermediate：NPM1 mut 合併 FLT3-ITD、Wild-type NPM1 合併 FLT3-ITD（不論 VAF 比例！）、其他非高/低風險染色體。
+• Adverse：TP53 mut、Complex karyotype (≥3)、Monosomal karyotype、-5/del(5q)、-7、-17/abn(17p)、t(6;9)、inv(3)、KMT2A 重排、骨髓化生不良相關突變 (ASXL1, BCOR, EZH2, RUNX1, SF3B1, SRSF2, STAG2, U2AF1, ZRSR2)。
+
+【額外檢查 & BM Study 備忘】
+• BM study：A (smear + cytochemical stain) + B + C + 血液室 flow + NPM1 / FLT3-ITD / FLT3-TKD / CEBPA / IDH1-2 / TP53 / RUNX1 (NGS panel) + study 4 支。
+• 化療前評估：Cardiac echo (LVEF)、HBV/HCV/HIV、HLA typing（中高風險預備異體移植）。
+• 特定主治醫師提醒：姚明醫師病人加抽 Anti-HTLV I/II, STS(VDRL), serum IFE, IgG/A/M, B2M。
+
+【初始治療原則】
+• 急症先處理：Leukostasis (Hydrea / Leukapheresis)、TLS (Hydration + Feburic / Rasburicase)、DIC/出血、感染。
+• 確定治療：Fit 病人 → 7+3 (Cytarabine + Idarubicin/Daunorubicin) ± Midostaurin/Quizartinib (FLT3+) 或 Gemtuzumab ozogamicin (CBF)；Unfit/高齡 → Venetoclax + Azacitidine/Decitabine。`,
+    items: [
+      {
+        id: "aml-1",
+        tag: "Transfusion",
+        text: "Component therapy with 減白加電血品 to keep Hb > 8.0 g/dL and PLT > 20 k/uL if no active bleeding.",
+        defaultChecked: true
+      },
+      {
+        id: "aml-2",
+        tag: "Lab",
+        text: "Check LDH, uric acid, Na, K, Ca, Mg, P, PT/aPTT, fibrinogen, Pro-BNP, HBsAg, Anti-HBs, Anti-HBc, Anti-HCV, and HIV combo test.",
+        defaultChecked: true,
+        note: "姚明醫師病人加抽 Anti-HTLV I/II, STS(VDRL), serum IFE, IgG/A/M, B2M。"
+      },
+      {
+        id: "aml-3",
+        tag: "TLS",
+        text: "Give normal saline 1000-1500 mL QD for hydration and tumor lysis syndrome (TLS) prophylaxis.",
+        defaultChecked: true
+      },
+      {
+        id: "aml-4",
+        tag: "TLS",
+        text: "Give cash Feburic 0.5# (40 mg) PO QD for hyperuricemia and TLS prophylaxis.",
+        defaultChecked: true
+      },
+      {
+        id: "aml-5",
+        tag: "TLS",
+        text: "Give Rasburicase 0.15 mg/kg/dose if uric acid > 10 mg/dL.",
+        defaultChecked: true,
+        note: "內部備忘（不會複製）：約 BW/10 支（1.5 mg/vial），使用前請先與 VS 確認，並留意排除 G6PD deficiency。"
+      },
+      {
+        id: "aml-6",
+        tag: "Leukostasis",
+        text: "If WBC > 100 k/uL or symptomatic leukostasis / hyperleukocytosis (dyspnea, headache, blurred vision, focal neurologic signs), consider leukapheresis (照會檢驗醫學部).",
+        defaultChecked: true
+      },
+      {
+        id: "aml-7",
+        tag: "Cytoreduction",
+        text: "Give Hydroxyurea (Hydrea) 2# BID-QID (max: 80 mg/kg/day) if high risk of leukostasis.",
+        defaultChecked: true
+      },
+      {
+        id: "aml-8",
+        tag: "Admission",
+        text: "We will arrange hematology ward admission soon for bone marrow study (with ELN molecular panel) and definitive therapy.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "all",
+    name: "ALL",
+    subtitle: "急性淋巴性白血病",
+    category: "Leukemia",
+    peTemplate: "leukemia",
+    impression: "1. Acute leukemia, favor acute lymphoblastic leukemia (ALL)",
+    references: [
+      "NCCN Guidelines: Acute Lymphoblastic Leukemia",
+      "WHO 5th Edition (2022) Lymphoid Neoplasms",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• 骨髓或周邊血 Lymphoblasts ≥ 20%（免疫分型確認 B-ALL [CD19, CD22, CD79a, TdT] 或 T-ALL [cCD3, CD7, TdT]）。
+
+【風險分層與預後指標】
+• 高風險特徵：高齡 (> 35-40 歲)、初診高白血球（B-ALL WBC > 30 k/uL；T-ALL WBC > 100 k/uL）、高風險染色體（KMT2A/MLL 重排、Hypodiploidy <44、Complex karyotype、Ph-like ALL）、ETP-ALL、誘導治療後 MRD 陽性。
+• CNS 侵犯分級：CNS1（無 blast）、CNS2（WBC <5 但有 blast）、CNS3（WBC ≥5 且有 blast 或顱神經麻痺）。
+
+【額外檢查 & BM Study 備忘】
+• BM study：A + B + C + 血液室 flow + **BCR-ABL1 (p190/p210)**（極關鍵，決定是否加 TKI！）+ study 4 支。
+• 縱膈腔腫塊評估：CXR / Chest CT（特別是 T-ALL 易有上腔靜脈症候群/氣道壓迫）。
+• CNS 評估：待周邊血 blasts 清除且凝血/血小板安全後再執行 LP + 鞘內化療 (IT MTX)。
+
+【初始治療原則】
+• Prephase 降細胞 + 防 TLS：Solu-Medrol 1 mg/kg/day IV（或 Prednisolone 60 mg/m²/day）× 5-7 天。
+• 確定治療：Ph+ ALL → TKI (Dasatinib/Ponatinib/Imatinib) + 減量類固醇/化療/Blinatumomab；Ph- ALL → AYA 採兒童強化療程 (pediatric-inspired)，成人採 Hyper-CVAD / TPOG / CALGB 並評估 CD20+ 加 Rituximab。`,
+    items: [
+      {
+        id: "all-1",
+        tag: "Transfusion",
+        text: "Component therapy with 減白加電血品 to keep Hb > 8.0 g/dL and PLT > 20 k/uL if no active bleeding.",
+        defaultChecked: true
+      },
+      {
+        id: "all-2",
+        tag: "Lab",
+        text: "Check LDH, uric acid, Na, K, Ca, Mg, P, PT/aPTT, fibrinogen, Pro-BNP, HBsAg, Anti-HBs, Anti-HBc, Anti-HCV, and HIV combo test.",
+        defaultChecked: true
+      },
+      {
+        id: "all-3",
+        tag: "TLS",
+        text: "Give normal saline 1000-1500 mL QD for hydration and TLS prophylaxis (ALL has high risk of TLS).",
+        defaultChecked: true
+      },
+      {
+        id: "all-4",
+        tag: "TLS",
+        text: "Give cash Feburic 0.5# (40 mg) PO QD for hyperuricemia and TLS prophylaxis.",
+        defaultChecked: true
+      },
+      {
+        id: "all-5",
+        tag: "TLS",
+        text: "Give Rasburicase 0.15 mg/kg/dose if uric acid > 10 mg/dL.",
+        defaultChecked: true,
+        note: "內部備忘（不會複製）：約 BW/10 支（1.5 mg/vial），使用前請先與 VS 確認。"
+      },
+      {
+        id: "all-6",
+        tag: "Leukostasis",
+        text: "If WBC > 100 k/uL or positive signs of leukostasis / hyperviscosity syndrome (dyspnea, headache, blurred vision, focal neurologic signs), consider leukapheresis (照會檢驗醫學部). Arrange CXR to exclude mediastinal mass (especially T-ALL).",
+        defaultChecked: true
+      },
+      {
+        id: "all-7",
+        tag: "Cytoreduction",
+        text: "Give Solu-Medrol 1 mg/kg/day IV (e.g., 40 mg Q12H) for cytoreduction.",
+        defaultChecked: true,
+        note: "可用右側計算器依體重換算 Solu-Medrol 劑量。"
+      },
+      {
+        id: "all-8",
+        tag: "Admission",
+        text: "We will arrange hematology ward admission soon for bone marrow study (including BCR-ABL1) and definitive therapy.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "apl",
+    name: "APL",
+    subtitle: "急性前骨髓細胞白血病",
+    category: "Leukemia",
+    peTemplate: "leukemia",
+    bannerAlert: "APL 屬血液科最高急症：高度致命 DIC 出血風險！懷疑即立刻給 ATRA（不等基因報告），積極維持 PLT > 50K、Fibrinogen > 150，凝血未矯正前嚴禁非必要侵入性處置！",
+    impression: "1. Acute leukemia, favor acute promyelocytic leukemia (APL)",
+    references: [
+      "ELN 2019 Management of APL (Sanz et al., Blood 2019)",
+      "NCCN Guidelines: Acute Myeloid Leukemia (APL section)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• PB/BM 見大量異常 promyelocytes（常含多束 Auer rods / faggot cells），以 FISH / RT-PCR 確診 t(15;17)(q24;q21) / **PML-RARA**（不須等報告即可先給 ATRA！）。
+
+【Sanz Score 風險分層（決定初始治療方案）】
+• Low risk：WBC ≤ 10 k/uL 且 PLT ≥ 40 k/uL。
+• Intermediate risk：WBC ≤ 10 k/uL 且 PLT < 40 k/uL。
+• High risk：WBC > 10 k/uL（不論血小板數值；早期出血死亡與分化症候群風險最高！）。
+
+【額外檢查 & BM Study 備忘】
+• 必抽完整 DIC profile（PT/aPTT/Fibrinogen/D-dimer/FDP）且每日追蹤至凝血穩定。
+• 使用 ATO (Arsenic trioxide) 前必做 baseline EKG（監測 QTc < 450-500 ms）與嚴格維持 K > 4.0、Mg > 2.0 mg/dL！
+• BM study：A + B + C + 血液室 flow + **PML-RARA** + study 4 支。
+
+【初始治療 (ELN / NCCN)】
+• 立即給予 ATRA (Vesanoid) 45 mg/m²/day divided BID。
+• Low/Intermediate risk (WBC ≤ 10K)：ATRA + ATO (Arsenic trioxide) 無化療方案（治癒率 > 95%）。
+• High risk (WBC > 10K)：ATRA + ATO + Idarubicin（或 Gemtuzumab ozogamicin）+ 預防性類固醇防 Differentiation syndrome。`,
+    items: [
+      {
+        id: "apl-1",
+        tag: "Transfusion",
+        text: "Component therapy with 減白加電血品 to keep Hb > 8.0 g/dL, PLT > 50 k/uL, and fibrinogen > 150 mg/dL (with cryoprecipitate 10-20U as needed). Avoid invasive procedures/central line until coagulopathy resolves.",
+        defaultChecked: true
+      },
+      {
+        id: "apl-2",
+        tag: "Lab",
+        text: "Check LDH, uric acid, Na, K, Ca, Mg, P, PT/aPTT, fibrinogen, DIC profile, baseline EKG (QTc), HBsAg, Anti-HBs, Anti-HBc, Anti-HCV, and HIV combo test.",
+        defaultChecked: true
+      },
+      {
+        id: "apl-3",
+        tag: "TLS",
+        text: "Give normal saline 1000-1500 mL QD for hydration and maintain K > 4.0 mmol/L & Mg > 2.0 mg/dL (in preparation for ATO).",
+        defaultChecked: true
+      },
+      {
+        id: "apl-4",
+        tag: "TLS",
+        text: "Give cash Feburic 0.5# (40 mg) PO QD for hyperuricemia and TLS prophylaxis.",
+        defaultChecked: true
+      },
+      {
+        id: "apl-5",
+        tag: "TLS",
+        text: "Give Rasburicase 0.15 mg/kg/dose if uric acid > 10 mg/dL.",
+        defaultChecked: true,
+        note: "內部備忘（不會複製）：約 BW/10 支（1.5 mg/vial），使用前請先與 VS 確認。"
+      },
+      {
+        id: "apl-6",
+        tag: "ATRA",
+        text: "Give Tretinoin (Vesanoid / ATRA) 45 mg/m2/day divided BID (approx. 3-4# BID) immediately upon clinical suspicion.",
+        defaultChecked: true,
+        note: "可用右側計算器依 BSA 換算精確顆數（每顆 10 mg）。"
+      },
+      {
+        id: "apl-7",
+        tag: "Cytoreduction",
+        text: "If WBC > 10 k/uL (High-risk Sanz score), consider giving Hydroxyurea (20-80 mg/kg/day).",
+        defaultChecked: true
+      },
+      {
+        id: "apl-8",
+        tag: "DS Prophylaxis",
+        text: "If differentiation syndrome (ATRA syndrome) is concerned (e.g., WBC > 5-10 k/uL), give prophylactic prednisone 0.5 mg/kg/day (or dexamethasone 10 mg IV Q12H).",
+        defaultChecked: true
+      },
+      {
+        id: "apl-9",
+        tag: "DS Treatment",
+        text: "If differentiation syndrome (ATRA syndrome) is suspected (unexplained fever, dyspnea, weight gain > 5 kg, pulmonary infiltrates, pleural/pericardial effusion, renal failure), give dexamethasone 10 mg IV Q12H immediately and evaluate whether to temporarily hold ATRA.",
+        defaultChecked: true
+      },
+      {
+        id: "apl-10",
+        tag: "Admission",
+        text: "We will arrange hematology ward admission soon.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  // ==================== LYMPHOMA / MM ====================
+  {
+    id: "fresh-lymphoma",
+    name: "Fresh Lymphoma",
+    subtitle: "新診斷淋巴瘤",
+    category: "Lymphoma/MM",
+    peTemplate: "standard",
+    impression: "1. Fresh lymphoma, Lugano stage to be determined",
+    references: [
+      "Lugano Classification (Cheson et al., JCO 2014)",
+      "NCCN Guidelines: B-Cell / T-Cell / Hodgkin Lymphomas",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• 黃金標準為完整淋巴結切除切片 (Excisional biopsy)，搭配 IHC 及必要時 FISH（DLBCL 須排除 MYC + BCL2/BCL6 double/triple-hit）。
+
+【Lugano 分期 & 常用 Risk Index】
+• Lugano Stage：I (單一區域)、II (橫膈膜同側 ≥2 區)、III (橫膈膜兩側)、IV (瀰漫性結外侵犯)；加註 B symptoms（發燒 >38°C、夜間盜汗、6 個月內體重減輕 >10%）與 Bulky disease。
+• DLBCL — **IPI** (0-5 分：Age >60, Stage III/IV, LDH↑, ECOG ≥2, >1 Extranodal site)：Low (0-1), Low-Int (2), High-Int (3), High (4-5)；另評估 **CNS-IPI**（加腎/腎上腺侵犯）。
+• Follicular Lymphoma — **FLIPI** (Age >60, Stage III/IV, Hb <12, >4 nodal sites, LDH↑)：Low (0-1), Int (2), High (≥3)。
+• Mantle Cell Lymphoma — **MIPI** (Age, ECOG, LDH, WBC)；Hodgkin Lymphoma — **IPS**。
+
+【額外檢查 & 科內備忘】
+• 尚未有病理切片前先安排 Tissue proof (GM admission)；確診才做完整 staging 並考慮收 12CD。
+• 病毒對應：DLBCL → HIV；T-cell → Anti-HTLV I/II；PEL → HHV-8；HL/DLBCL/BL/PCNSL/ENKTL → EBV。
+• **抗 CD20 (Rituximab) 前必驗 HBsAg + Anti-HBc**：凡 HBsAg(+) 或 Anti-HBc(+) 皆須評估 HBV 預防用藥（Entecavir/TAF）避免猛爆性肝炎！
+• BM study：若 PET 明確且 CBC/DC 正常，DLBCL 常可免除或僅做 A+B；若有 cytopenia 或懷疑 BM involvement 做 A+B+C+flow。
+
+【初始治療原則】
+• 高腫瘤負荷 (Burkitt / Bulky DLBCL)：先防 TLS + Prephase steroid。
+• DLBCL：R-CHOP 或 Pola-R-CHP (IPI ≥2)；Double-hit 考慮 DA-EPOCH-R。`,
+    items: [
+      {
+        id: "lym-1",
+        tag: "Lab",
+        text: "Please check following tests at next blood sampling: serum LDH, uric acid, IgA, IgG, IgM, SPEP, and beta-2 microglobulin.",
+        defaultChecked: true
+      },
+      {
+        id: "lym-2",
+        tag: "Staging",
+        text: "If formal pathology report confirms lymphoma, please complete following lymphoma staging (Lugano classification):\n  - Check HBsAg, Anti-HBs, Anti-HBc (HBV DNA if positive, for HBV prophylaxis before Rituximab), Anti-HCV, EBV viral load, and HIV Ag/Ab Combo\n  - Arrange neck + chest + abdomen + pelvis CT (+/- contrast)\n  - Arrange FDG-PET/CT scan (for FDG-avid lymphomas)\n  - Arrange cardiac echo (LVEF) as pre-chemotherapy evaluation (if age > 65 y/o or anthracycline planned)\n  - Contact us for BM study (A+B; add C+flow if cytopenia or suspected BM involvement).",
+        defaultChecked: true
+      },
+      {
+        id: "lym-3",
+        tag: "Subtype",
+        text: "Check Anti-HTLV I/II (if T-cell lymphoma) and/or HHV-8 (if primary effusion lymphoma).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "lym-4",
+        tag: "TLS",
+        text: "If bulky mass / high tumor burden: give IV hydration + cash Feburic 0.5# QD for TLS prophylaxis; check Na, K, Ca, Mg, P, Pro-BNP; consider Rasburicase 0.15 mg/kg/dose if uric acid > 10 mg/dL.",
+        defaultChecked: false,
+        optional: true,
+        note: "Rasburicase 約 BW/10 支，使用前請先與 VS 確認。"
+      },
+      {
+        id: "lym-5",
+        tag: "Follow-up",
+        text: "BM study will be arranged soon. Please contact us once the above documents/reports are available.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "mm",
+    name: "Multiple Myeloma (MM)",
+    subtitle: "多發性骨髓瘤",
+    category: "Lymphoma/MM",
+    peTemplate: "standard",
+    impression: "1. Suspected multiple myeloma (MM)",
+    references: [
+      "IMWG 2014 Updated Criteria for Multiple Myeloma (Rajkumar et al., Lancet Oncol 2014)",
+      "R2-ISS Staging System (D'Agostino et al., JCO 2022)",
+      "NCCN Guidelines: Multiple Myeloma"
+    ],
+    ddxNote: `【診斷標準 (IMWG 2014: Clonal BM plasma cells ≥ 10% 或切片證實 plasmacytoma + 任一 SLiM-CRAB)】
+• **CRAB**：Calcium > 11 mg/dL、Renal (Cr > 2 或 CrCl < 40)、Anemia (Hb < 10 或降 > 2)、Bone (≥1 osteolytic lesion)。
+• **SLiM** (Myeloma-defining events)：Sixty (BM plasma cells ≥ 60%)、Light chain ratio (involved/uninvolved ≥ 100 且 involved FLC ≥ 100 mg/L)、MRI (>1 focal lesion ≥ 5 mm)。
+
+【分期與風險分層：ISS / R-ISS / R2-ISS (2022)】
+• ISS：I (B2M <3.5 & Alb ≥3.5)、III (B2M ≥5.5)、II (介於兩者)。
+• **R2-ISS** 積分（ISS II: 1, ISS III: 1.5, del(17p): 1, LDH↑: 1, t(4;14): 1, 1q gain/amp: 0.5）：
+  - Low (0)、Low-Int (0.5-1.0)、Int-High (1.5-2.5)、High (3.0-5.0)。
+
+【住院與 BM Study 備忘（不會複製）】
+• 若無劇痛不一定要住院，BM 可回門診排（先問照會 VS）。
+• 住院 Indication（收 GM admission，**不需住 12CD**）：Hyperviscosity 需血漿置換、Osteolytic lesion 致神經壓迫/失能、Plasma cell leukemia、嚴重高血鈣/腎衰。
+• BM exam：A + B (取長一點) + C + 血液室 flow + FISH (del17p, t(4;14), t(14;16), 1q21) + study 2 管（執行前請 call 林耘曲）。
+
+【初始治療】
+• 急症處置：大量輸液保護腎臟、降血鈣（Saline + Calcitonin / Pamidronate [Aredia] 或 Denosumab；腎差者避免 Zoledronic acid）、脊椎壓迫立即給 Dexamethasone + 照會放腫/神外。
+• 系統治療：VRd / Dara-VRd（視移植資格與健保給付）。`,
+    items: [
+      {
+        id: "mm-1",
+        tag: "Lab",
+        text: "Check CBC/DC, TP, Alb, BUN/Cre, LDH, Ca (with Alb correction), SPEP, serum IFE, IgG/IgA/IgM, serum quantitation of kappa/lambda free light chain, and serum beta-2 microglobulin.",
+        defaultChecked: true
+      },
+      {
+        id: "mm-2",
+        tag: "Urine",
+        text: "If urine output is available, check UPEP, urine IFE, and urine quantitation of kappa/lambda.",
+        defaultChecked: true,
+        note: "提醒：尿液開的是 quantitation of kappa/lambda（不是 free light chain 那筆）。"
+      },
+      {
+        id: "mm-3",
+        tag: "Imaging",
+        text: "Arrange skeletal bone survey or low-dose whole-body CT (arrange urgent spine MRI if cord compression/neurologic deficits are suspected; note: bone survey cannot be done at ER).",
+        defaultChecked: true
+      },
+      {
+        id: "mm-4",
+        tag: "Support",
+        text: "Provide adequate pain control (avoid NSAIDs!), IV hydration for high M-protein / renal protection, and correct hypercalcemia (if renal impairment, may give pamidronate [Aredia] IV infusion over 4-6 hrs or denosumab).",
+        defaultChecked: true
+      },
+      {
+        id: "mm-5",
+        tag: "BM Study",
+        text: "Contact us for bone marrow study (A+B+C+flow+MM FISH) to confirm diagnosis and R2-ISS staging.",
+        defaultChecked: true,
+        note: "內部備忘：B 取長一點 + study 2 管，執行前請聯絡林耘曲。"
+      }
+    ]
+  },
+
+  {
+    id: "amyloidosis",
+    name: "Amyloidosis (AL)",
+    subtitle: "系統性類澱粉沉積症",
+    category: "Lymphoma/MM",
+    peTemplate: "standard",
+    impression: "1. Suspected systemic AL amyloidosis",
+    references: [
+      "Mayo 2012 Staging System for AL Amyloidosis (Kumar et al., JCO 2012)",
+      "NCCN Guidelines: Systemic Light Chain Amyloidosis",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷標準】
+• 組織切片（腹部脂肪墊、骨髓、直腸或受影響器官）Congo red 染色於偏光顯微鏡下呈蘋果綠雙折射 (apple-green birefringence) + 證實為輕鏈型 (AL) 及單株漿細胞疾病。
+• 備忘：AA type 非常少見；院內無質譜儀可直接分型，臨床以排除/確診 AL type（M-protein + 組織 Congo red）並排除 ATTR（PYP scan）為主。
+
+【Mayo 2012 分期系統（預後關鍵！）】
+• 三大危險因子（各 1 分）：
+  1. cTnT ≥ 0.03 ng/mL（或 hs-TnT ≥ 40 ng/L）
+  2. NT-proBNP ≥ 1,800 pg/mL
+  3. dFLC (involved − uninvolved FLC) ≥ 180 mg/L
+• 分期與中位存活：Stage I (0分, ~94m) / Stage II (1分, ~40m) / Stage III (2分, ~14m) / Stage IV (3分, ~6m)。
+
+【額外檢查】
+• 器官侵犯評估：心臟超音波（留意室壁增厚與 apical sparing strain）、EKG（低電壓）、Cardiac MRI、24-hr 尿蛋白、ALP/肝功能、凝血功能（留意 Factor X 缺乏！）。
+
+【初始治療】
+• 第一線標準治療（ANDROMEDA trial）：Daratumumab + CyBorD (Cyclophosphamide + Bortezomib + Dexamethasone)；心臟侵犯者慎用利尿劑、避免過度輸液與 Digoxin/CCB。`,
+    items: [
+      {
+        id: "amy-1",
+        tag: "Screen",
+        text: "To detect M-protein and rule in/out AL amyloidosis, please check urine 24-hour total protein, serum and urine IFE, and serum quantitation of kappa/lambda free light chain.",
+        defaultChecked: true
+      },
+      {
+        id: "amy-2",
+        tag: "Staging",
+        text: "For Mayo 2012 staging and organ involvement survey: check hs-Troponin T, NT-proBNP, ALP, Bil-T/D, PT/aPTT (r/o Factor X deficiency), EKG, and cardiac echo (with longitudinal strain if available).",
+        defaultChecked: true
+      },
+      {
+        id: "amy-3",
+        tag: "Workup",
+        text: "If M-protein is found and AL amyloidosis is suspected, please arrange:\n  (1) SPEP, UPEP, IgG/IgA/IgM, serum beta-2 microglobulin\n  (2) Bone marrow study (A + B + Congo red stain)\n  (3) Consult dermatologist for abdominal fat pad biopsy, or consult GI specialist for rectal biopsy.",
+        defaultChecked: true
+      },
+      {
+        id: "amy-4",
+        tag: "Follow-up",
+        text: "Please contact us once all lab data are reported.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  // ==================== MPN / MYELOID / OTHER ====================
+  {
+    id: "eosinophilia",
+    name: "Eosinophilia",
+    subtitle: "嗜伊紅性白血球增多症",
+    category: "MPN/Other",
+    peTemplate: "standard",
+    impression: "1. Eosinophilia (AEC: ___ /uL), etiology to be determined",
+    references: [
+      "WHO 5th Edition (2022) & ICC 2022: Myeloid/Lymphoid Neoplasms with Eosinophilia",
+      "BSH Guideline for Investigation and Management of Eosinophilia",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【診斷與嚴重度分級】
+• 定義：Absolute Eosinophil Count (AEC) > 500/uL；Hypereosinophilia (HE) 為 AEC ≥ 1,500/uL（相隔 ≥ 1 個月或伴器官損傷稱為 HES）。
+• 分級：輕度 (500-1,500)、中度 (1,500-5,000)、重度 (> 5,000/uL)。
+
+【常見病因口訣：NAACP】
+• N: Neoplasm (MLN-TK: PDGFRA/PDGFRB/FGFR1/JAK2/FLT3, CEL, Lymphoma, Solid tumor)
+• A: Addison disease (8 AM cortisol/ACTH)
+• A: Allergy / Drug (DRESS) / Asthma / Atopic dermatitis
+• C: Collagen vascular disease (EGPA / ANCA vasculitis)
+• P: Parasite (特別是 Strongyloides！給類固醇前務必評估！)
+
+【額外檢查】
+• 終端器官損傷（尤以心臟最致命）：Troponin-T、NT-proBNP、Cardiac echo、PFT、LFT、U/A、皮膚/神經學評估。
+• 懷疑 Mastocytosis：Serum tryptase（院內無法驗，外送彰基，自費 NTD 4,000）。
+
+【初始治療】
+• 若出現危及生命之器官損傷（心肌炎、血栓、嚴重肺浸潤）：緊急給予類固醇（Prednisolone 1 mg/kg/day 或 pulse Solu-Medrol），但有寄生蟲暴露史者須併給 Ivermectin 預防 Strongyloides hyperinfection！
+• 若確診 FIP1L1-PDGFRA 重排：首選 Imatinib 100 mg QD（療效極佳！）。`,
+    items: [
+      {
+        id: "eos-1",
+        tag: "History",
+        text: "Please clarify detailed exposure history: allergic history, Chinese herbs, new medications (within 1-3 weeks, r/o DRESS), occupational exposure, food, and travel/parasite history.",
+        defaultChecked: true
+      },
+      {
+        id: "eos-2",
+        tag: "Lab",
+        text: "Check CBC/DC, creatinine, vitamin B12, 8 AM cortisol/ACTH, IgE, lymphocyte flow cytometry, stool ova/parasites (x3), and serum tryptase (for mastocytosis; 院內無法驗，需外送彰化基督教醫院，自費 NTD 4,000).",
+        defaultChecked: true
+      },
+      {
+        id: "eos-3",
+        tag: "Organ",
+        text: "Survey end-organ involvement: Troponin-T, NT-proBNP, EKG, Bil-T/D, AST/ALT, urine analysis, CXR, and PFT (arrange cardiac echo if Troponin-T elevated or cardiac symptoms).",
+        defaultChecked: true
+      },
+      {
+        id: "eos-4",
+        tag: "Optional",
+        text: "Optional targeted tests based on clinical suspicion:\n  - If suspected sinusitis/asthma/vasculitis (EGPA): check ANA, p-ANCA, c-ANCA\n  - If suspected MPN/MLN-TK: check PDGFRA/PDGFRB, JAK2 V617F, CALR, BCR-ABL1\n  - If suspected STD/retrovirus: check HIV, HTLV-I/II\n  - If suspected lymphoma: arrange CT scan.",
+        defaultChecked: true
+      },
+      {
+        id: "eos-5",
+        tag: "Emergency",
+        text: "If life-threatening end-organ damage (e.g., eosinophilic myocarditis, pulmonary infiltrates, thromboembolism) is present, consider systemic steroid (Prednisolone 1 mg/kg/day or pulse Solu-Medrol) after evaluating/covering Strongyloides exposure.",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "eos-6",
+        tag: "BM Study",
+        text: "If no definite etiology is identified or eosinophilia persists after removing the culprit cause, please contact hematologist for bone marrow study.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "mpn",
+    name: "MPN",
+    subtitle: "骨髓增生性腫瘤",
+    category: "MPN/Other",
+    peTemplate: "standard",
+    impression: "1. Suspected myeloproliferative neoplasm (PV / ET / PMF)",
+    references: [
+      "WHO 5th Edition (2022) Myeloproliferative Neoplasms",
+      "NCCN Guidelines: Myeloproliferative Neoplasms",
+      "IPSET-thrombosis & DIPSS-plus / MIPSS70+ v2.0"
+    ],
+    ddxNote: `【WHO 2022 診斷重點】
+• PV：Hb > 16.5 (M) / > 16.0 (F) 或 Hct > 49% (M) / > 48% (F) + BM 泛骨髓增生 + JAK2 V617F/exon 12 突變（次要：EPO↓）。
+• ET：持續 PLT ≥ 450 k/uL + BM 巨核細胞增生 + 排除 CML/PV/PMF/MDS + JAK2 / CALR / MPL 突變。
+• PMF：BM 巨核細胞異型增生伴纖維化 (MF-2/3) + Driver mutation（或 clonal marker）。
+
+【常用 Risk Index】
+• **PV 血栓風險**：High risk（Age > 60 歲或有血栓病史）vs Low risk（皆無）。
+• **ET — Revised IPSET-thrombosis**：Very low (Age ≤60, 無血栓, JAK2-)、Low (Age ≤60, 無血栓, JAK2+)、Int (Age >60, 無血栓, JAK2-)、High (有血栓史，或 Age >60 且 JAK2+)。
+• **PMF — DIPSS-plus / MIPSS70+ v2.0**：評估 Age >65、全身症狀、Hb <10、WBC >25K、Blasts ≥1%、輸血依賴、高風險染色體/突變 (ASXL1, EZH2, SRSF2, IDH1/2, U2AF1)。
+
+【額外檢查 & 出血警訊】
+• 若 **PLT > 1,000 k/uL**，務必留意 **Acquired von Willebrand disease (AvWD)**（驗 vWF:RCo/Ag），使用 Aspirin 前須排除出血傾向！
+
+【初始治療】
+• PV：放血維持 **Hct < 45%** + 低劑量 Aspirin (81-100 mg QD)；High risk 加降細胞藥（Hydroxyurea 或 Peg-IFN / Ropeginterferon）。
+• ET：依 IPSET 決定 Aspirin（Very low 可觀察，若 PLT >1000K 先排除 AvWD）；High risk 加 Hydroxyurea / Anagrelide / IFN。
+• PMF：症狀性脾腫大/全身症狀 → JAK inhibitor (Ruxolitinib / Fedratinib)；中高風險評估異體移植。`,
+    items: [
+      {
+        id: "mpn-1",
+        tag: "Lab",
+        text: "Check JAK2 V617F mutation, CALR mutation, MPL mutation (if triple-negative suspected), BCR-ABL1 fusion gene assay (to exclude CML), and serum EPO.",
+        defaultChecked: true
+      },
+      {
+        id: "mpn-2",
+        tag: "Lab",
+        text: "Check LAP (leukocyte alkaline phosphatase) score, LDH, uric acid, iron profile (iron/ferritin/TIBC), and arrange abdominal echo for splenomegaly.",
+        defaultChecked: true
+      },
+      {
+        id: "mpn-3",
+        tag: "Bleeding",
+        text: "Check stool OB. If PLT > 1000 k/uL, check vWF activity/antigen to exclude acquired von Willebrand disease before starting low-dose aspirin.",
+        defaultChecked: true
+      },
+      {
+        id: "mpn-4",
+        tag: "Treatment",
+        text: "If PV is confirmed: initiate therapeutic phlebotomy (target Hct < 45%) and low-dose aspirin 100 mg QD (if no contraindication); consider cytoreduction (Hydroxyurea or IFN) if high risk (age > 60 or prior thrombosis).",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "mpn-5",
+        tag: "BM Study",
+        text: "Bone marrow study (A+B+C with reticulin/trichrome stain for fibrosis) is recommended for definite diagnosis and WHO classification.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "cmml",
+    name: "CMML (CMMoL)",
+    subtitle: "慢性骨髓單核球白血病",
+    category: "MPN/Other",
+    peTemplate: "standard",
+    impression: "1. Persistent monocytosis, rule out chronic myelomonocytic leukemia (CMML)",
+    references: [
+      "WHO 5th Edition (2022) Myelodysplastic/Myeloproliferative Neoplasms",
+      "CPSS-mol Prognostic Model (Elena et al., Blood 2016)",
+      "ASH-SAP & Wintrobe's Clinical Hematology"
+    ],
+    ddxNote: `【WHO 2022 診斷標準（重要更新：單核球閾值下修至 0.5！）】
+• 必備條件：
+  1. 持續周邊血單核球增多：**AMC ≥ 0.5 k/uL** 且單核球比例 **≥ 10%**（原 2016 標準為 ≥ 1.0 k/uL）。
+  2. PB 與 BM Blasts（含 promonocytes）< 20%。
+  3. 排除 CML (BCR-ABL1)、其他 MPN 及 MLN-TK (PDGFRA/B, FGFR1, JAK2)。
+• 支持條件：≥1 系骨髓發育不良 (dysplasia)、clonal cytogenetic/molecular abnormality（常見 TET2, SRSF2, ASXL1）、或流式細胞儀單核球亞群異常（若 AMC 0.5-1.0 須同時具 dysplasia 與 clonal marker）。
+
+【WHO 2022 分型 & CPSS-mol 風險分層】
+• 依白血球分型：MD-CMML (WBC < 13 k/uL) vs MP-CMML (WBC ≥ 13 k/uL)。
+• 依芽球分級：CMML-1 (PB <5%, BM <10%) vs CMML-2 (PB 5-19% 或 BM 10-19% 或有 Auer rods)。
+• **CPSS-mol**：整合 MD/MP 分型、CMML-1/2、RBC 輸血依賴、染色體風險、以及 4 大高風險基因突變（**ASXL1, RUNX1, NRAS, SETBP1**）分 4 層（Low / Int-1 / Int-2 / High）。
+
+【初始治療】
+• 無症狀低風險：密切追蹤觀察 (Watch & wait)。
+• 增生型 (MP-CMML) 脾腫大/高白血球：Hydroxyurea 降細胞。
+• 高風險 / CMML-2 / 嚴重血球低下：去甲基化藥物 (Azacitidine / Decitabine)，年輕 Fit 高風險病人評估異體幹細胞移植（唯一根治方式）。`,
+    items: [
+      {
+        id: "cmml-1",
+        tag: "Lab",
+        text: "Check PB smear, BCR-ABL1 fusion gene assay, LAP score, LDH, uric acid, and exclude secondary/reactive causes of monocytosis (chronic infection, TB, autoimmune disease, solid malignancy).",
+        defaultChecked: true
+      },
+      {
+        id: "cmml-2",
+        tag: "Imaging",
+        text: "Arrange abdominal echo to evaluate splenomegaly.",
+        defaultChecked: true
+      },
+      {
+        id: "cmml-3",
+        tag: "BM Study",
+        text: "If monocytosis (AMC ≥ 0.5 k/uL and ≥ 10% per WHO 2022) persists and secondary causes are excluded, arrange bone marrow study (A+B+C+flow+myeloid NGS panel including ASXL1/RUNX1/NRAS/SETBP1) for diagnosis and CPSS-mol risk stratification.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  // ==================== EMERGENCY / TRANSPLANT ====================
+  {
+    id: "fn",
+    name: "Febrile Neutropenia",
+    subtitle: "嗜中性白血球低下發燒",
+    category: "Emergency",
+    peTemplate: "standard",
+    impression: "1. Febrile neutropenia (ANC: ___ /uL)\n2. [Underlying hematologic malignancy, s/p regimen, disease status]",
+    references: [
+      "IDSA Clinical Practice Guideline for Febrile Neutropenia (Freifeld et al., CID 2011)",
+      "ESMO Clinical Practice Guidelines: Management of Febrile Neutropenia (2016)",
+      "NCCN Guidelines: Prevention and Treatment of Cancer-Related Infections"
+    ],
+    ddxNote: `【診斷標準 (IDSA)】
+• 發燒：單次耳/口溫 ≥ 38.3°C，或 ≥ 38.0°C 持續超過 1 小時。
+• 嗜中性球低下：ANC < 500/uL，或 < 1,000/uL 且預計 48 小時內降至 < 500/uL。
+
+【風險分層 Risk Index】
+• **MASCC Risk Index**（滿分 26 分）：
+  - **≥ 21 分**：Low risk（可評估門診口服抗生素或短期觀察）。
+  - **< 21 分**：High risk（須立即住院靜脈廣效抗生素）。
+• **CISNE Score**（適用於看似穩定的實體癌 FN）：≥ 2 分屬高風險併發症，不建議直接放回家。
+• 高風險警訊：預期深層嗜中性球低下 (< 100/uL) > 7 天、血液惡性腫瘤/急性白血病/移植後、低血壓、肺炎、腹痛/腸炎、肝腎功能異常。
+
+【抗生素升級與治療原則】
+• **黃金 1 小時內**給予抗綠膿桿菌 β-lactam（Cefepime / Piperacillin-Tazobactam）。
+• 病情快速惡化升級 Carbapenem（avoid Mepem for diversity strategy）；懷疑導管感染/皮膚軟組織/MRSA/敗血性休克加 Vancomycin 或 Teicoplanin（GPC bacteremia 考慮 Daptomycin > 9 mg/kg/day）。
+• 持續發燒 4-7 天仍 neutropenic → 評估侵襲性黴菌感染（Chest CT + Galactomannan/Aspergillus Ag + 經驗性抗黴菌藥）。
+• 電解質目標參考：Na 135-145, K 3.5-4.5, Corrected Ca 2.15-2.45, Mg 0.9-1.0。`,
+    items: [
+      {
+        id: "fn-1",
+        tag: "Septic Workup",
+        text: "Complete septic workup immediately: blood culture x 2 sets (若有 Port-A，其中一套從 Port-A 抽), blood fungal culture (若有 Port-A，從 Port-A 抽), sputum culture, U/A, U/C, and chest X-ray; pursue culture results.",
+        defaultChecked: true
+      },
+      {
+        id: "fn-2",
+        tag: "Atypical",
+        text: "Consider atypical pathogen survey according to clinical symptoms: sputum AFS x 3 days, Influenza A+B / SARS-CoV-2 / RSV / Parainfluenza rapid tests, Mycoplasma pneumoniae PCR, Chlamydia IgM, urine pneumococcal & Legionella antigen, sputum PJP PCR, Aspergillus Ag, CMV viral load, and EBV viral load.",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "fn-3",
+        tag: "Antibiotics",
+        text: "Start empirical Cefepime (Maxipime) or Piperacillin/Tazobactam (Tazocin) full dose within 1 hr (adjust according to renal function); consider adding Azithromycin and/or Oseltamivir (Tamiflu) if atypical/viral infection is suspected, or Vancomycin if catheter/MRSA/hemodynamic instability.",
+        defaultChecked: true,
+        note: "病情惡化升級 carbapenem（avoid Mepem）；若 GPC bacteremia 考慮 Daptomycin (>9 mg/kg/day)。"
+      },
+      {
+        id: "fn-4",
+        tag: "Lab",
+        text: "Check CBC/DC (請至少抽過一次 central 單，不要只抽急單), total protein, Alb, T-Bil, LDH, uric acid, BUN/Cre, Na, K, Cl, Ca, Mg, P, PT/aPTT, DIC profile, and stool OB (視臨床狀況增減).",
+        defaultChecked: true
+      },
+      {
+        id: "fn-5",
+        tag: "Follow-up",
+        text: "Follow up CBC/DC QD or QOD (WBC < 0.5 k/uL 時只驗 CBC，不驗 DC).",
+        defaultChecked: true
+      },
+      {
+        id: "fn-6",
+        tag: "Transfusion",
+        text: "Component therapy with 減白加電血品 to keep Hb > 8.0 g/dL and PLT > 20 k/uL if no active bleeding.",
+        defaultChecked: true
+      },
+      {
+        id: "fn-7",
+        tag: "G-CSF",
+        text: "Give G-CSF 5 mcg/kg/day SC QD until WBC > 4,000/uL or ANC > 2,000/uL.",
+        defaultChecked: false,
+        optional: true,
+        note: "內部強制提醒（不會複製）：請務必和 Hema 照會 Fellow / VS 討論後才能加 G-CSF！"
+      },
+      {
+        id: "fn-8",
+        tag: "Support",
+        text: "Provide nutrition support with IVF and/or PPN if poor oral intake; correct electrolyte imbalance (target: Na 135-145, K 3.5-4.5, corrected Ca 2.15-2.45, Mg 0.9-1.0); record U/O if impaired renal function; keep OPD medications.",
+        defaultChecked: true
+      },
+      {
+        id: "fn-9a",
+        tag: "Disposition",
+        text: "Arrange GM admission (無隔離，3>2) for IV antibiotics and close monitoring (high-risk FN or MASCC < 21).",
+        defaultChecked: true,
+        note: "與下方 MBD 選項二擇一，視病人 MASCC/風險與退燒狀況決定。"
+      },
+      {
+        id: "fn-9b",
+        tag: "Disposition",
+        text: "If low-risk FN (MASCC ≥ 21) and afebrile for 1-3 days without toxic signs, may discharge (MBD) with oral levofloxacin 750 mg QD (adjust for renal function) and arrange hematology OPD follow-up; if persistent fever, arrange GM admission.",
+        defaultChecked: false,
+        optional: true
+      }
+    ]
+  },
+
+  {
+    id: "agvhd",
+    name: "Acute GvHD",
+    subtitle: "急性移植物抗宿主疾病",
+    category: "Emergency",
+    peTemplate: "standard",
+    bannerAlert: "重要提醒：疑似 Acute GvHD 病人一律須先與 Hema Fellow / VS 討論後再處理！免疫抑制劑調整必須向 Hema VS 確認！",
+    impression: "1. Suspected acute graft-versus-host disease (aGvHD, MAGIC Grade ___)\n2. [Underlying disease, s/p allo-HSCT date]",
+    references: [
+      "MAGIC Criteria for Acute GVHD (Harris et al., BBMT 2016)",
+      "EBMT 2024 Recommendations for Prophylaxis and Management of GVHD",
+      "NCCN Guidelines: Hematopoietic Cell Transplantation"
+    ],
+    ddxNote: `【MAGIC 器官分期 (Organ Staging)】
+• **Skin (BSA)**：St 1 (<25%)、St 2 (25-50%)、St 3 (>50%)、St 4 (全身紅皮症併水泡/脫屑 >5%)。
+• **Liver (Bil-T)**：St 1 (2.0-3.0)、St 2 (3.1-6.0)、St 3 (6.1-15.0)、St 4 (>15.0 mg/dL)。
+• **Upper GI**：St 1（持續噁心/嘔吐/厭食）。
+• **Lower GI (成人每日腹瀉量)**：St 1 (500-999 mL)、St 2 (1,000-1,500 mL)、St 3 (>1,500 mL)、St 4 (劇烈腹痛伴腸阻塞或明顯血便)。
+
+【Overall Clinical Grading】
+• Grade I：僅 Skin St 1-2。
+• Grade II：Skin St 3、或 Liver St 1、或 Upper GI St 1、或 Lower GI St 1。
+• Grade III：Liver St 2-3 或 Lower GI St 2-3。
+• Grade IV：Skin St 4、Liver St 4 或 Lower GI St 4。
+
+【額外檢查 & 鑑別診斷】
+• 必排除感染（CMV colitis、C. difficile、腸道病毒/細菌）、藥物疹、SOS/VOD（肝腫大/體重增加/腹水）。不確定時安排皮膚或腸胃道切片。
+
+【初始治療原則（須由 Hema VS 決定）】
+• Grade I (限局部皮膚)：外用類固醇藥膏，維持原免疫抑制劑濃度 (CsA/Tacrolimus)。
+• Grade II-IV：系統性類固醇 Methylprednisolone 1-2 mg/kg/day IV（Upper GI 為主可併口服 non-absorbable steroid 如 Budesonide）。
+• 類固醇無效 (Steroid-refractory aGvHD)：首選 **Ruxolitinib** (REACH2 trial)。`,
+    items: [
+      {
+        id: "gvhd-1",
+        tag: "Lab",
+        text: "Check CBC/DC (central 單，不要急單), total protein, Alb, T-Bil, D-Bil, AST, ALT, ALP, GGT, LDH, uric acid, BUN/Cre, Na, K, Cl, Ca, Mg, P, PT/aPTT, DIC profile, and stool OB (add C. difficile toxin & stool culture if diarrhea).",
+        defaultChecked: true
+      },
+      {
+        id: "gvhd-2",
+        tag: "Infection",
+        text: "If fever develops, complete septic workup (blood culture x2 sets + fungal culture, with one set via Port-A if present; sputum, U/A, U/C, CXR) and start empirical antibiotics (if febrile neutropenia, follow FN protocol).",
+        defaultChecked: true
+      },
+      {
+        id: "gvhd-3",
+        tag: "Monitoring",
+        text: "Follow up Cyclosporin A (C0 level) or Tacrolimus (FK-506), CMV viral load, EBV viral load, and Aspergillus Ag BIW (QW1, 4).",
+        defaultChecked: true
+      },
+      {
+        id: "gvhd-4",
+        tag: "GI / MAGIC",
+        text: "Document MAGIC organ staging daily (skin BSA %, Bil-T, upper GI symptoms, and exact daily stool volume in mL/day). Keep IV hydration and closely follow BUN/Cre, Na, K, Ca, Mg. Notify hematology fellow immediately if daily stool volume increases.",
+        defaultChecked: true,
+        note: "腹瀉量增加代表 MAGIC 分級惡化，可能需要調整免疫抑制劑或升級系統性類固醇。"
+      },
+      {
+        id: "gvhd-5",
+        tag: "Antifungal",
+        text: "If stool volume > 1000 mL/day and patient is not currently on an antifungal agent, please consult ID specialist for antifungal prophylaxis.",
+        defaultChecked: false,
+        optional: true
+      },
+      {
+        id: "gvhd-6",
+        tag: "Transfusion",
+        text: "Follow up CBC/DC QOD (WBC < 0.5 k/uL 時只驗 CBC，不驗 DC). Component therapy with 減白加電血品 to keep Hb > 8.0 g/dL and PLT > 20 k/uL if no active bleeding.",
+        defaultChecked: true
+      },
+      {
+        id: "gvhd-7",
+        tag: "Support",
+        text: "Provide nutrition support with IVF and/or PPN if poor oral intake; correct electrolyte imbalance (Na 135-145, K 3.5-4.5, corrected Ca 2.15-2.45, Mg 0.9-1.0); record U/O if impaired renal function.",
+        defaultChecked: true
+      },
+      {
+        id: "gvhd-8",
+        tag: "Medication",
+        text: "Keep current OPD medications including prophylactic antibiotics, Cyclosporin A (or Tacrolimus), and steroid unless otherwise instructed by hematology VS.",
+        defaultChecked: true,
+        note: "內部強制提醒（不會複製）：任何免疫抑制劑加減量，必須向 Hema VS 確認後才能改動！"
+      },
+      {
+        id: "gvhd-9",
+        tag: "Admission",
+        text: "Arrange GM admission for further management.",
+        defaultChecked: true
+      }
+    ]
+  },
+
+  {
+    id: "hlh",
+    name: "HLH",
+    subtitle: "噬血球性淋巴組織球增生症",
+    category: "Emergency",
+    peTemplate: "standard",
+    bannerAlert: "成人次發性 HLH 死亡率極高：最常見誘因為淋巴瘤（尤以 T/NK-cell、DLBCL）與 EBV 感染，務必同步積極尋找潛在誘因！",
+    impression: "1. Pancytopenia / Persistent fever, rule out hemophagocytic lymphohistiocytosis (HLH)",
+    references: [
+      "HLH-2004 Diagnostic Guidelines (Henter et al., Pediatr Blood Cancer 2007)",
+      "HScore for Reactive Hemophagocytic Syndrome (Fardet et al., Arthritis Rheumatol 2014)",
+      "ASH 2019 Recommendations for Management of HLH in Adults (La Rosée et al., Blood 2019)"
+    ],
+    ddxNote: `【診斷標準 1：HLH-2004（符合 ≥ 5/8 項；口訣：鐵血凝油燒脾骨 + sCD25↑）】
+1. Fever ≥ 38.5°C
+2. Splenomegaly
+3. Cytopenia (≥ 2 系)：Hb < 9 g/dL、PLT < 100 k/uL、ANC < 1.0 k/uL
+4. Hypertriglyceridemia (fasting TG > 265 mg/dL) 和/或 Hypofibrinogenemia (Fibrinogen < 150 mg/dL)
+5. Hemophagocytosis in BM, spleen, lymph node, or liver
+6. Low or absent NK-cell activity
+7. Ferritin > 500 ng/mL（成人 > 3,000-10,000 ng/mL 特異性更高）
+8. Elevated soluble CD25 (sIL-2Rα) > 2,400 U/mL
+
+【診斷標準 2：HScore（成人次發性 HLH 常用）】
+• 納入 9 項：已知免疫抑制、體溫、肝脾腫大、血球低下數、Ferritin、TG、Fibrinogen、AST、BM hemophagocytosis。
+• **Cutoff ≥ 169 分**：敏感度 ~93%、特異度 ~86%（HLH 機率 > 50%）。
+
+【初始治療原則 (ASH 2019 Adult HLH)】
+• **治療潛在誘因最關鍵**（感染用抗生素/抗病毒、淋巴瘤盡早確診化療、自體免疫 MAS 用高劑量類固醇/Anakinra）。
+• 急性器官衰竭/高發炎風暴：依 HLH-94/2004 啟動 **Dexamethasone 10 mg/m²/day**（視嚴重度與 EBV/惡性腫瘤加 **Etoposide** 減量調整；若合併 EBV 驅動可加 Rituximab）。`,
+    items: [
+      {
+        id: "hlh-1",
+        tag: "Lab",
+        text: "Check HLH workup (for HLH-2004 & HScore): ferritin, fasting triglyceride (TG), fibrinogen, LDH, AST/ALT, Bil-T/D, PT/aPTT, D-dimer, and soluble CD25 (sIL-2Rα, if available).",
+        defaultChecked: true
+      },
+      {
+        id: "hlh-2",
+        tag: "Trigger",
+        text: "Aggressively survey underlying trigger for secondary HLH: EBV viral load, CMV viral load, HIV, blood cultures, autoimmune profile (ANA/dsDNA), and whole-body CT scan (or PET/CT) to rule out occult lymphoma.",
+        defaultChecked: true
+      },
+      {
+        id: "hlh-3",
+        tag: "Imaging",
+        text: "Arrange abdominal echo or CT to evaluate hepatosplenomegaly and lymphadenopathy.",
+        defaultChecked: true
+      },
+      {
+        id: "hlh-4",
+        tag: "BM Study",
+        text: "Contact us for bone marrow study (A+B+C+flow) to evaluate hemophagocytosis and exclude underlying hematologic malignancy.",
+        defaultChecked: true
+      },
+      {
+        id: "hlh-5",
+        tag: "Treatment",
+        text: "If HLH is confirmed with rapid clinical deterioration/organ failure, initiate systemic steroid (e.g., Dexamethasone 10 mg/m2/day IV) ± Etoposide (discuss with hematology VS; avoid delaying biopsy if lymphoma is strongly suspected).",
+        defaultChecked: false,
+        optional: true,
+        note: "若高度懷疑淋巴瘤引起的 HLH，儘量在給予類固醇前完成切片，以免組織壞死影響病理診斷！"
+      }
+    ]
+  }
+];
+
+window.FOOTER_CONFIG = {
+  gmAdmissionText: "We will arrange GM (7BC, 14A, 5E3, 5W1) admission for the patient, please also contact 7AD for admission.",
+  closingText: "Please feel free to contact us for further discussion. Thanks for your consultation."
+};
+
+</script>
+  <script>
+// 血液科臨床計算機 & 常用 Risk Index 模組
+// 提供即時查找、與當前疾病模板關聯提示、互動式計分與一鍵插入照會預覽
+
+(function () {
+  "use strict";
+
+  const CALCULATORS = [
+    {
+      id: "dose",
+      shortName: "BSA & 劑量",
+      title: "BSA & 血液科常用劑量",
+      category: "常用工具",
+      keywords: "bsa body surface area mosteller dose rasburicase atra ivig steroid g-csf hydroxyurea 身高 體重 劑量",
+      relatedTemplates: ["aml", "all", "apl", "itp", "hemolytic-anemia", "fn"]
+    },
+    {
+      id: "cci",
+      shortName: "1-hr CCI",
+      title: "1-hr CCI 血小板輸注反應",
+      category: "凝血/血小板",
+      keywords: "cci platelet transfusion refractoriness itp 血小板 輸血",
+      relatedTemplates: ["itp", "thrombocytopenia-survey"]
+    },
+    {
+      id: "anemia",
+      shortName: "RPI & Mentzer",
+      title: "RPI & Mentzer Index (貧血)",
+      category: "RBC",
+      keywords: "rpi reticulocyte production index mentzer anemia thalassemia ida mcv rbc 貧血 網狀紅血球 地中海",
+      relatedTemplates: ["anemia", "hemolytic-anemia"]
+    },
+    {
+      id: "4ts",
+      shortName: "4Ts (HIT)",
+      title: "4Ts Score — HIT 風險評估",
+      category: "凝血/血小板",
+      keywords: "4ts hit heparin induced thrombocytopenia pf4 肝素 血小板低下",
+      relatedTemplates: ["thrombocytopenia-survey", "itp"]
+    },
+    {
+      id: "plasmic",
+      shortName: "PLASMIC (TTP)",
+      title: "PLASMIC Score — TTP 風險評估",
+      category: "凝血/血小板",
+      keywords: "plasmic ttp tma adamts13 maha schistocyte 血栓性血小板低下紫斑症 血漿置換",
+      relatedTemplates: ["thrombocytopenia-survey", "hemolytic-anemia"]
+    },
+    {
+      id: "dic",
+      shortName: "ISTH DIC",
+      title: "ISTH Overt DIC Score",
+      category: "凝血/血小板",
+      keywords: "isth overt dic disseminated intravascular coagulation d-dimer fibrinogen pt 瀰漫性血管內凝血",
+      relatedTemplates: ["thrombocytopenia-survey", "prolonged-pt-aptt", "apl"]
+    },
+    {
+      id: "sanz",
+      shortName: "Sanz (APL)",
+      title: "Sanz Score — APL 風險分層",
+      category: "白血病/MPN",
+      keywords: "sanz apl acute promyelocytic leukemia atra ato wbc plt 急性前骨髓細胞白血病",
+      relatedTemplates: ["apl"]
+    },
+    {
+      id: "ipi",
+      shortName: "IPI / CNS-IPI",
+      title: "IPI & CNS-IPI — DLBCL 預後分層",
+      category: "淋巴瘤/MM",
+      keywords: "ipi cns-ipi dlbcl lymphoma lugano ecog ldh extranodal 淋巴瘤 瀰漫性大B細胞",
+      relatedTemplates: ["fresh-lymphoma"]
+    },
+    {
+      id: "flipi",
+      shortName: "FLIPI (FL)",
+      title: "FLIPI — 濾泡性淋巴瘤預後指數",
+      category: "淋巴瘤/MM",
+      keywords: "flipi follicular lymphoma nodal hb ldh 濾泡性淋巴瘤",
+      relatedTemplates: ["fresh-lymphoma"]
+    },
+    {
+      id: "mm-iss",
+      shortName: "ISS / R2-ISS",
+      title: "ISS / R-ISS / R2-ISS — 多發性骨髓瘤分期",
+      category: "淋巴瘤/MM",
+      keywords: "iss r-iss r2-iss mm multiple myeloma b2m albumin ldh fish del17p t(4;14) 1q 多發性骨髓瘤",
+      relatedTemplates: ["mm"]
+    },
+    {
+      id: "mayo2012",
+      shortName: "Mayo 2012",
+      title: "Mayo 2012 — AL 類澱粉沉積症分期",
+      category: "淋巴瘤/MM",
+      keywords: "mayo 2012 al amyloidosis troponin nt-probnp dflc 類澱粉沉積症 心臟分期",
+      relatedTemplates: ["amyloidosis"]
+    },
+    {
+      id: "ipset",
+      shortName: "IPSET (ET)",
+      title: "Revised IPSET-thrombosis (ET)",
+      category: "白血病/MPN",
+      keywords: "ipset revised et essential thrombocythemia mpn jak2 thrombosis 血小板增多症 骨髓增生性腫瘤",
+      relatedTemplates: ["mpn"]
+    },
+    {
+      id: "mascc",
+      shortName: "MASCC (FN)",
+      title: "MASCC Risk Index — 嗜中性白血球低下發燒",
+      category: "急症/移植",
+      keywords: "mascc fn febrile neutropenia anc sepsis outpatient 嗜中性白血球低下發燒",
+      relatedTemplates: ["fn"]
+    },
+    {
+      id: "hscore",
+      shortName: "HScore (HLH)",
+      title: "HScore — 成人次發性 HLH 評分",
+      category: "急症/移植",
+      keywords: "hscore hlh hemophagocytic lymphohistiocytosis ferritin tg fibrinogen ast 噬血球",
+      relatedTemplates: ["hlh"]
+    },
+    {
+      id: "hlh2004",
+      shortName: "HLH-2004",
+      title: "HLH-2004 診斷標準 (8 項)",
+      category: "急症/移植",
+      keywords: "hlh-2004 hlh criteria ferritin scd25 nk hemophagocytosis 噬血球 診斷標準",
+      relatedTemplates: ["hlh"]
+    },
+    {
+      id: "magic",
+      shortName: "MAGIC (GvHD)",
+      title: "MAGIC Criteria — Acute GvHD 分期與分級",
+      category: "急症/移植",
+      keywords: "magic agvhd acute gvhd graft versus host disease skin liver gi stool 移植物抗宿主",
+      relatedTemplates: ["agvhd"]
+    }
+  ];
+
+  function createHub({ container, onInsertText, getActiveTemplateId }) {
+    let activeCalcId = "dose";
+    let searchQuery = "";
+    let sharedBsa = "";
+
+    container.innerHTML = `
+      <div class="calc-hub-header">
+        <div class="calc-hub-title-row">
+          <h3>臨床計算機 & Risk Index</h3>
+          <span id="calcCountBadge" class="calc-count-badge">${CALCULATORS.length} 項</span>
+        </div>
+        <div class="calc-search-wrap">
+          <input type="text" id="calcSearchInput" class="calc-search-input" placeholder="查找 Risk Index 或計算機（如 4Ts, PLASMIC, IPI, R2-ISS, MASCC, HScore...）" />
+          <button type="button" id="btnClearCalcSearch" class="calc-search-clear" title="清除搜尋" hidden>✕</button>
+        </div>
+        <div id="calcRecommendedRow" class="calc-rec-row" hidden></div>
+        <div id="calcPickerList" class="calc-picker-list" role="tablist" aria-label="選擇計算機"></div>
+      </div>
+      <div class="calc-body-header">
+        <span id="calcActiveTitle" class="calc-active-title"></span>
+        <button type="button" id="btnResetActiveCalc" class="icon-btn" title="重設此計算機輸入">重設</button>
+      </div>
+      <div id="calcBody" class="calc-body"></div>
+    `;
+
+    const dom = {
+      countBadge: container.querySelector("#calcCountBadge"),
+      searchInput: container.querySelector("#calcSearchInput"),
+      btnClearSearch: container.querySelector("#btnClearCalcSearch"),
+      recRow: container.querySelector("#calcRecommendedRow"),
+      pickerList: container.querySelector("#calcPickerList"),
+      activeTitle: container.querySelector("#calcActiveTitle"),
+      btnReset: container.querySelector("#btnResetActiveCalc"),
+      body: container.querySelector("#calcBody")
+    };
+
+    function getFilteredCalculators() {
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return CALCULATORS;
+      return CALCULATORS.filter((c) => {
+        const hay = `${c.id} ${c.shortName} ${c.title} ${c.category} ${c.keywords}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function renderRecommended() {
+      const tplId = typeof getActiveTemplateId === "function" ? getActiveTemplateId() : null;
+      const related = tplId
+        ? CALCULATORS.filter((c) => c.relatedTemplates && c.relatedTemplates.includes(tplId))
+        : [];
+
+      if (related.length === 0 || searchQuery.trim()) {
+        dom.recRow.hidden = true;
+        return;
+      }
+
+      dom.recRow.hidden = false;
+      dom.recRow.innerHTML =
+        `<span class="calc-rec-label">此疾病常用：</span>` +
+        related
+          .map(
+            (c) =>
+              `<button type="button" class="calc-rec-chip ${c.id === activeCalcId ? "active" : ""}" data-rec-id="${c.id}">${c.shortName}</button>`
+          )
+          .join("");
+
+      dom.recRow.querySelectorAll(".calc-rec-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectCalculator(btn.getAttribute("data-rec-id"));
+        });
+      });
+    }
+
+    function renderPicker() {
+      const filtered = getFilteredCalculators();
+      dom.countBadge.textContent = searchQuery.trim()
+        ? `${filtered.length} / ${CALCULATORS.length}`
+        : `${CALCULATORS.length} 項`;
+
+      if (filtered.length === 0) {
+        dom.pickerList.innerHTML = `<div class="calc-empty-search">找不到符合「${escapeHtml(searchQuery)}」的計算機</div>`;
+        return;
+      }
+
+      // If current active is not in filtered while searching, switch to first match
+      if (searchQuery.trim() && !filtered.some((c) => c.id === activeCalcId)) {
+        activeCalcId = filtered[0].id;
+        renderCalculatorBody();
+      }
+
+      dom.pickerList.innerHTML = filtered
+        .map(
+          (c) =>
+            `<button type="button" class="calc-pill ${c.id === activeCalcId ? "active" : ""}" data-calc-id="${c.id}" role="tab" aria-selected="${c.id === activeCalcId ? "true" : "false"}" title="${escapeHtml(c.title)}">${escapeHtml(c.shortName)}</button>`
+        )
+        .join("");
+
+      dom.pickerList.querySelectorAll(".calc-pill").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectCalculator(btn.getAttribute("data-calc-id"));
+        });
+      });
+    }
+
+    function selectCalculator(id) {
+      if (!CALCULATORS.some((c) => c.id === id)) return;
+      activeCalcId = id;
+      renderRecommended();
+      renderPicker();
+      renderCalculatorBody();
+    }
+
+    function makeInsertBtn(getLineFn, label = "插入結果至照會預覽") {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn btn-secondary btn-sm calc-insert-btn";
+      btn.textContent = label;
+      btn.addEventListener("click", () => {
+        const line = getLineFn();
+        if (line && typeof onInsertText === "function") {
+          onInsertText(line);
+        }
+      });
+      return btn;
+    }
+
+    function renderCalculatorBody() {
+      const meta = CALCULATORS.find((c) => c.id === activeCalcId) || CALCULATORS[0];
+      dom.activeTitle.textContent = meta.title;
+      dom.body.innerHTML = "";
+
+      const renderer = RENDERERS[meta.id];
+      if (renderer) {
+        renderer(dom.body, {
+          makeInsertBtn,
+          getSharedBsa: () => sharedBsa,
+          setSharedBsa: (v) => { sharedBsa = v; }
+        });
+      }
+    }
+
+    // Search events
+    dom.searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      dom.btnClearSearch.hidden = !searchQuery;
+      renderRecommended();
+      renderPicker();
+    });
+
+    dom.btnClearSearch.addEventListener("click", () => {
+      searchQuery = "";
+      dom.searchInput.value = "";
+      dom.btnClearSearch.hidden = true;
+      renderRecommended();
+      renderPicker();
+      dom.searchInput.focus();
+    });
+
+    dom.btnReset.addEventListener("click", () => {
+      renderCalculatorBody();
+    });
+
+    // Initial render
+    renderRecommended();
+    renderPicker();
+    renderCalculatorBody();
+
+    return {
+      onTemplateChange() {
+        renderRecommended();
+      },
+      selectCalculator
+    };
+  }
+
+  // ==================== Individual Calculator Renderers ====================
+  const RENDERERS = {
+    // 1. BSA & Dose
+    dose(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field">
+            <span>身高 BH (cm)</span>
+            <input type="number" id="c_bh" placeholder="例如 165" min="50" max="250" step="0.1" />
+          </label>
+          <label class="field">
+            <span>體重 BW (kg)</span>
+            <input type="number" id="c_bw" placeholder="例如 60" min="10" max="250" step="0.1" />
+          </label>
+        </div>
+        <div class="calc-result-box" id="c_dose_out">
+          <div class="calc-placeholder">輸入身高與體重，自動計算 BSA (Mosteller) 及常用血液科劑量</div>
+        </div>
+      `;
+      const inBh = root.querySelector("#c_bh");
+      const inBw = root.querySelector("#c_bw");
+      const out = root.querySelector("#c_dose_out");
+
+      function update() {
+        const bh = parseFloat(inBh.value);
+        const bw = parseFloat(inBw.value);
+        if (!bh || !bw || bh <= 0 || bw <= 0) {
+          out.innerHTML = `<div class="calc-placeholder">輸入身高與體重，自動計算 BSA (Mosteller) 及常用血液科劑量</div>`;
+          return;
+        }
+        const bsa = Math.sqrt((bh * bw) / 3600);
+        const bsaFixed = bsa.toFixed(2);
+        ctx.setSharedBsa(bsaFixed);
+
+        const rasburicaseMg = (bw * 0.15).toFixed(1);
+        const rasburicaseVials = (bw * 0.15 / 1.5).toFixed(1);
+        const atraDailyMg = Math.round(bsa * 45);
+        const atraBidCaps = (atraDailyMg / 2 / 10).toFixed(1);
+        const ivigDailyG = Math.round(bw * 1);
+        const predLow = Math.round(bw * 1);
+        const predHigh = Math.round(bw * 1.5);
+        const gcsfMcg = Math.round(bw * 5);
+        const huLow = Math.round(bw * 20);
+        const huHigh = Math.round(bw * 80);
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">BSA (Mosteller)</span><span class="dose-val">${bsaFixed} m²</span></div>
+          <div class="dose-row"><span class="dose-name">Rasburicase (0.15 mg/kg)</span><span class="dose-val">${rasburicaseMg} mg (~${rasburicaseVials} 支)</span></div>
+          <div class="dose-row"><span class="dose-name">ATRA (45 mg/m²/day)</span><span class="dose-val">${atraDailyMg} mg/day (~${atraBidCaps}# BID)</span></div>
+          <div class="dose-row"><span class="dose-name">IVIG (1 g/kg/day × 2d)</span><span class="dose-val">${ivigDailyG} g/day</span></div>
+          <div class="dose-row"><span class="dose-name">Predonine / Solu-Medrol (1-1.5 mg/kg)</span><span class="dose-val">${predLow}-${predHigh} mg/day</span></div>
+          <div class="dose-row"><span class="dose-name">G-CSF (5 mcg/kg/day)</span><span class="dose-val">${gcsfMcg} mcg/day</span></div>
+          <div class="dose-row"><span class="dose-name">Hydroxyurea (20-80 mg/kg)</span><span class="dose-val">${huLow}-${huHigh} mg/day</span></div>
+        `;
+      }
+
+      inBh.addEventListener("input", update);
+      inBw.addEventListener("input", update);
+    },
+
+    // 2. 1-hr CCI
+    cci(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field"><span>輸血前 Plt (k/uL)</span><input type="number" id="c_pre" placeholder="例如 8" min="0" step="1" /></label>
+          <label class="field"><span>輸血後 1hr Plt (k/uL)</span><input type="number" id="c_post" placeholder="例如 15" min="0" step="1" /></label>
+        </div>
+        <div class="calc-grid-2">
+          <label class="field"><span>BSA (m²) <small>可由 BSA 帶入</small></span><input type="number" id="c_bsa" value="${escapeHtml(ctx.getSharedBsa())}" placeholder="例如 1.65" min="0.5" max="3.5" step="0.01" /></label>
+          <label class="field"><span>輸注血小板量 (×10¹¹)</span><input type="number" id="c_dose" value="3" min="0.5" max="20" step="0.5" title="12u SDP 約為 3 × 10^11" /></label>
+        </div>
+        <div class="calc-result-box" id="c_cci_out">
+          <div class="calc-placeholder">輸入輸血前後血小板數值與 BSA，自動計算 1-hr CCI</div>
+        </div>
+      `;
+      const els = ["#c_pre", "#c_post", "#c_bsa", "#c_dose"].map((s) => root.querySelector(s));
+      const out = root.querySelector("#c_cci_out");
+
+      function update() {
+        const [pre, post, bsa, dose] = els.map((x) => parseFloat(x.value));
+        if (isNaN(pre) || isNaN(post) || isNaN(bsa) || isNaN(dose) || bsa <= 0 || dose <= 0) {
+          out.innerHTML = `<div class="calc-placeholder">輸入輸血前後血小板數值與 BSA，自動計算 1-hr CCI</div>`;
+          return;
+        }
+        const cci = Math.round(((post - pre) * 1000 * bsa) / dose);
+        const isLow = cci < 10000;
+        out.innerHTML = `
+          <div class="dose-row">
+            <span class="dose-name">1-hr CCI 結果</span>
+            <span class="risk-badge ${isLow ? "risk-high" : "risk-low"}">${cci.toLocaleString()}</span>
+          </div>
+          <div class="calc-interp">${isLow ? "1-hr CCI < 10,000 → 偏向免疫性破壞 (ITP / HLA 抗體)" : "1-hr CCI ≥ 10,000 → 輸血反應尚可"}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(
+            () => `1-hr CCI = ${cci.toLocaleString()} (Pre-Plt: ${pre} k/uL, Post-1hr Plt: ${post} k/uL, BSA: ${bsa} m2, Plt dose: ${dose} x 10^11) -> ${isLow ? "favors immune-mediated platelet consumption (ITP)." : "adequate post-transfusion increment."}`,
+            "插入 1-hr CCI 結果至照會預覽"
+          )
+        );
+      }
+
+      els.forEach((x) => x.addEventListener("input", update));
+    },
+
+    // 3. RPI & Mentzer
+    anemia(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field"><span>Reticulocyte (%)</span><input type="number" id="c_retic" placeholder="例如 2.5" min="0" step="0.1" /></label>
+          <label class="field"><span>Hct (%)</span><input type="number" id="c_hct" placeholder="例如 24" min="5" max="70" step="0.1" /></label>
+        </div>
+        <div class="calc-grid-2">
+          <label class="field"><span>MCV (fL)</span><input type="number" id="c_mcv" placeholder="例如 68" min="40" max="150" step="0.1" /></label>
+          <label class="field"><span>RBC (M/uL)</span><input type="number" id="c_rbc" placeholder="例如 5.5" min="0.5" max="10" step="0.01" /></label>
+        </div>
+        <div class="calc-result-box" id="c_anemia_out">
+          <div class="calc-placeholder">輸入 Retic/Hct 計算 RPI，或輸入 MCV/RBC 計算 Mentzer Index</div>
+        </div>
+      `;
+      const els = ["#c_retic", "#c_hct", "#c_mcv", "#c_rbc"].map((s) => root.querySelector(s));
+      const out = root.querySelector("#c_anemia_out");
+
+      function update() {
+        const [retic, hct, mcv, rbc] = els.map((x) => parseFloat(x.value));
+        const rows = [];
+        const parts = [];
+
+        if (!isNaN(retic) && !isNaN(hct) && hct > 0) {
+          let mat = 1.0;
+          if (hct < 15) mat = 2.5;
+          else if (hct <= 25) mat = 2.0;
+          else if (hct <= 35) mat = 1.5;
+          const rpi = (retic * (hct / 45)) / mat;
+          const rpiStr = rpi.toFixed(2);
+          const isLow = rpi < 2;
+          rows.push(`
+            <div class="dose-row"><span class="dose-name">RPI (Maturation: ${mat})</span><span class="risk-badge ${isLow ? "risk-high" : "risk-low"}">${rpiStr}</span></div>
+            <div class="calc-interp">${isLow ? "RPI < 2 → 骨髓代償不足 (hypoproliferative)" : "RPI ≥ 2 → 骨髓代償反應佳 (hemolysis / blood loss)"}</div>
+          `);
+          parts.push(`RPI = ${rpiStr} (Retic ${retic}%, Hct ${hct}%, ${isLow ? "hypoproliferative" : "adequate marrow response"})`);
+        }
+
+        if (!isNaN(mcv) && !isNaN(rbc) && rbc > 0) {
+          const mentzer = (mcv / rbc).toFixed(1);
+          const isThal = parseFloat(mentzer) < 13;
+          rows.push(`
+            <div class="dose-row"><span class="dose-name">Mentzer Index (MCV/RBC)</span><span class="risk-badge ${isThal ? "risk-mid" : "risk-low"}">${mentzer}</span></div>
+            <div class="calc-interp">${isThal ? "< 13 → 偏向 Thalassemia trait" : "≥ 13 → 偏向 Iron deficiency anemia (IDA)"}</div>
+          `);
+          parts.push(`Mentzer index = ${mentzer} (MCV ${mcv} fL / RBC ${rbc} M/uL -> ${isThal ? "favor thalassemia" : "favor IDA"})`);
+        }
+
+        if (rows.length === 0) {
+          out.innerHTML = `<div class="calc-placeholder">輸入 Retic/Hct 計算 RPI，或輸入 MCV/RBC 計算 Mentzer Index</div>`;
+          return;
+        }
+        out.innerHTML = rows.join("");
+        out.appendChild(ctx.makeInsertBtn(() => parts.join("; ")));
+      }
+
+      els.forEach((x) => x.addEventListener("input", update));
+    },
+
+    // 4. 4Ts Score (HIT)
+    "4ts"(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-stack">
+          <label class="field">
+            <span>1. Thrombocytopenia (血小板下降幅度與最低值)</span>
+            <select id="c_4t_1">
+              <option value="0">下降 < 30% 或最低值 < 10 k/uL (0分)</option>
+              <option value="1">下降 30–50% 或最低值 10–19 k/uL (+1分)</option>
+              <option value="2">下降 > 50% 且最低值 ≥ 20 k/uL (+2分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>2. Timing of platelet count fall (下降時間點)</span>
+            <select id="c_4t_2">
+              <option value="0">≤ 4 天且近期無 heparin 暴露 (0分)</option>
+              <option value="1">符合第 5–10 天但不明確 / > 10 天 / ≤ 1 天 (30–100 天內曾暴露) (+1分)</option>
+              <option value="2">明確第 5–10 天發生，或 ≤ 1 天 (30 天內曾暴露) (+2分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>3. Thrombosis or other sequelae (血栓或其他併發症)</span>
+            <select id="c_4t_3">
+              <option value="0">無 (0分)</option>
+              <option value="1">進展性/復發性血栓、非壞死性皮膚病灶、疑似血栓 (+1分)</option>
+              <option value="2">確診新血栓、注射處皮膚壞死、急性全身反應 (+2分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>4. oTher causes for thrombocytopenia (其他可能原因)</span>
+            <select id="c_4t_4">
+              <option value="0">有明確其他原因 (0分)</option>
+              <option value="1">可能有其他原因 (+1分)</option>
+              <option value="2">無明顯其他原因 (+2分)</option>
+            </select>
+          </label>
+        </div>
+        <div class="calc-result-box" id="c_4t_out"></div>
+      `;
+      const sels = ["#c_4t_1", "#c_4t_2", "#c_4t_3", "#c_4t_4"].map((s) => root.querySelector(s));
+      const out = root.querySelector("#c_4t_out");
+
+      function update() {
+        const score = sels.reduce((sum, s) => sum + parseInt(s.value, 10), 0);
+        let level, cls, note;
+        if (score <= 3) {
+          level = "Low probability";
+          cls = "risk-low";
+          note = "0–3 分：HIT 機率低 (<5%, NPV ~99%)，通常不須驗 anti-PF4。";
+        } else if (score <= 5) {
+          level = "Intermediate probability";
+          cls = "risk-mid";
+          note = "4–5 分：中度風險 → 立即停用所有 heparin，驗 anti-PF4/heparin Ab，並改用非肝素抗凝藥！";
+        } else {
+          level = "High probability";
+          cls = "risk-high";
+          note = "6–8 分：高度風險 → 立即停用所有 heparin，驗 anti-PF4/heparin Ab，並立刻啟動非肝素抗凝藥！";
+        }
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">4Ts Score (HIT)</span><span class="risk-badge ${cls}">${score} / 8 (${level})</span></div>
+          <div class="calc-interp">${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `4Ts score for HIT = ${score}/8 (${level.toLowerCase()}).`)
+        );
+      }
+
+      sels.forEach((s) => s.addEventListener("change", update));
+      update();
+    },
+
+    // 5. PLASMIC Score (TTP)
+    plasmic(root, ctx) {
+      const items = [
+        "Platelet count < 30 k/uL",
+        "Hemolysis (Retic > 2.5%, haptoglobin undetectable, or indirect Bil > 2.0)",
+        "No active cancer (within 1 year)",
+        "No history of solid-organ or stem-cell transplant",
+        "MCV < 90 fL",
+        "INR < 1.5",
+        "Creatinine < 2.0 mg/dL"
+      ];
+      root.innerHTML = `
+        <div class="calc-checklist">
+          ${items
+            .map(
+              (label, i) =>
+                `<label class="calc-check-row"><input type="checkbox" class="c_pl_chk" data-idx="${i}" /><span>${label} (+1)</span></label>`
+            )
+            .join("")}
+        </div>
+        <div class="calc-result-box" id="c_pl_out"></div>
+      `;
+      const chks = Array.from(root.querySelectorAll(".c_pl_chk"));
+      const out = root.querySelector("#c_pl_out");
+
+      function update() {
+        const score = chks.filter((c) => c.checked).length;
+        let level, cls, note;
+        if (score <= 4) {
+          level = "Low risk";
+          cls = "risk-low";
+          note = "0–4 分：嚴重 ADAMTS13 缺乏 (<10%) 機率極低 (0–4%)。";
+        } else if (score === 5) {
+          level = "Intermediate risk";
+          cls = "risk-mid";
+          note = "5 分：中度風險 (5–24%) → 抽 ADAMTS13 活性並密切評估是否啟動血漿置換 (TPE)。";
+        } else {
+          level = "High risk";
+          cls = "risk-high";
+          note = "6–7 分：高度風險 (62–82%) → 立即抽 ADAMTS13（輸血漿前）並緊急啟動 TPE + 類固醇！避免預防性輸血小板！";
+        }
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">PLASMIC Score (TTP)</span><span class="risk-badge ${cls}">${score} / 7 (${level})</span></div>
+          <div class="calc-interp">${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `PLASMIC score = ${score}/7 (${level.toLowerCase()} for severe ADAMTS13 deficiency / TTP).`)
+        );
+      }
+
+      chks.forEach((c) => c.addEventListener("change", update));
+      update();
+    },
+
+    // 6. ISTH Overt DIC
+    dic(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-stack">
+          <label class="field">
+            <span>Platelet count (血小板)</span>
+            <select id="c_dic_plt">
+              <option value="0">> 100 k/uL (0分)</option>
+              <option value="1">50–100 k/uL (+1分)</option>
+              <option value="2">< 50 k/uL (+2分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Fibrin marker (D-dimer / FDP)</span>
+            <select id="c_dic_dd">
+              <option value="0">正常 / 無上升 (0分)</option>
+              <option value="2">中度上升 (+2分)</option>
+              <option value="3">顯著上升 (+3分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Prolonged PT (較對照延長秒數)</span>
+            <select id="c_dic_pt">
+              <option value="0">< 3 sec (0分)</option>
+              <option value="1">3–6 sec (+1分)</option>
+              <option value="2">> 6 sec (+2分)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Fibrinogen (纖維蛋白原)</span>
+            <select id="c_dic_fib">
+              <option value="0">≥ 100 mg/dL (0分)</option>
+              <option value="1">< 100 mg/dL (+1分)</option>
+            </select>
+          </label>
+        </div>
+        <div class="calc-result-box" id="c_dic_out"></div>
+      `;
+      const sels = ["#c_dic_plt", "#c_dic_dd", "#c_dic_pt", "#c_dic_fib"].map((s) => root.querySelector(s));
+      const out = root.querySelector("#c_dic_out");
+
+      function update() {
+        const score = sels.reduce((sum, s) => sum + parseInt(s.value, 10), 0);
+        const isOvert = score >= 5;
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">ISTH Overt DIC Score</span><span class="risk-badge ${isOvert ? "risk-high" : "risk-low"}">${score} / 8 (${isOvert ? "Overt DIC" : "Non-overt"})</span></div>
+          <div class="calc-interp">${isOvert ? "≥ 5 分：符合 Overt DIC（顯性瀰漫性血管內凝血），須積極治療潛在病因並監測凝血與輸血支持。" : "< 5 分：尚未達 Overt DIC 標準，建議 1–2 天內重複追蹤。"}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `ISTH overt DIC score = ${score}/8 (${isOvert ? "compatible with overt DIC" : "not meeting overt DIC criteria"}).`)
+        );
+      }
+
+      sels.forEach((s) => s.addEventListener("change", update));
+      update();
+    },
+
+    // 7. Sanz Score (APL)
+    sanz(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field"><span>初診 WBC (k/uL)</span><input type="number" id="c_sanz_wbc" placeholder="例如 12.5" min="0" step="0.1" /></label>
+          <label class="field"><span>初診 PLT (k/uL)</span><input type="number" id="c_sanz_plt" placeholder="例如 28" min="0" step="1" /></label>
+        </div>
+        <div class="calc-result-box" id="c_sanz_out">
+          <div class="calc-placeholder">輸入初診 WBC 與 PLT，計算 APL Sanz 風險分層</div>
+        </div>
+      `;
+      const inWbc = root.querySelector("#c_sanz_wbc");
+      const inPlt = root.querySelector("#c_sanz_plt");
+      const out = root.querySelector("#c_sanz_out");
+
+      function update() {
+        const wbc = parseFloat(inWbc.value);
+        const plt = parseFloat(inPlt.value);
+        if (isNaN(wbc) || isNaN(plt)) {
+          out.innerHTML = `<div class="calc-placeholder">輸入初診 WBC 與 PLT，計算 APL Sanz 風險分層</div>`;
+          return;
+        }
+        let risk, cls, note;
+        if (wbc > 10) {
+          risk = "High Risk";
+          cls = "risk-high";
+          note = "WBC > 10 k/uL：高風險（出血與分化症候群風險最高）→ 立即 ATRA + 預防性類固醇，並評估合併化療 (Idarubicin/GO) 或 Hydroxyurea。";
+        } else if (plt < 40) {
+          risk = "Intermediate Risk";
+          cls = "risk-mid";
+          note = "WBC ≤ 10 且 PLT < 40 k/uL：中風險 → 標準無化療方案 ATRA + ATO，積極維持 PLT > 50K、Fibrinogen > 150。";
+        } else {
+          risk = "Low Risk";
+          cls = "risk-low";
+          note = "WBC ≤ 10 且 PLT ≥ 40 k/uL：低風險 → 標準無化療方案 ATRA + ATO（治癒率 > 95%）。";
+        }
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">APL Sanz Score</span><span class="risk-badge ${cls}">${risk}</span></div>
+          <div class="calc-interp">${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `APL Sanz risk stratification: ${risk} (initial WBC ${wbc} k/uL, PLT ${plt} k/uL).`)
+        );
+      }
+
+      inWbc.addEventListener("input", update);
+      inPlt.addEventListener("input", update);
+    },
+
+    // 8. IPI & CNS-IPI (DLBCL)
+    ipi(root, ctx) {
+      const core = [
+        "Age > 60 years",
+        "Lugano / Ann Arbor Stage III or IV",
+        "Elevated serum LDH (> ULN)",
+        "ECOG Performance Status ≥ 2",
+        "> 1 Extranodal site"
+      ];
+      root.innerHTML = `
+        <div class="calc-checklist">
+          ${core
+            .map((l) => `<label class="calc-check-row"><input type="checkbox" class="c_ipi_core" /><span>${l} (+1)</span></label>`)
+            .join("")}
+          <label class="calc-check-row calc-check-divider">
+            <input type="checkbox" id="c_ipi_cns" />
+            <span><strong>CNS-IPI 加項：</strong>Kidney and/or adrenal gland involvement (+1)</span>
+          </label>
+        </div>
+        <div class="calc-result-box" id="c_ipi_out"></div>
+      `;
+      const coreChks = Array.from(root.querySelectorAll(".c_ipi_core"));
+      const cnsChk = root.querySelector("#c_ipi_cns");
+      const out = root.querySelector("#c_ipi_out");
+
+      function update() {
+        const ipi = coreChks.filter((c) => c.checked).length;
+        const cnsIpi = ipi + (cnsChk.checked ? 1 : 0);
+
+        let ipiGrp, ipiCls;
+        if (ipi <= 1) { ipiGrp = "Low"; ipiCls = "risk-low"; }
+        else if (ipi === 2) { ipiGrp = "Low-Int"; ipiCls = "risk-mid"; }
+        else if (ipi === 3) { ipiGrp = "High-Int"; ipiCls = "risk-mid"; }
+        else { ipiGrp = "High"; ipiCls = "risk-high"; }
+
+        let cnsGrp, cnsCls, cnsNote;
+        if (cnsIpi <= 1) { cnsGrp = "Low (<1%)"; cnsCls = "risk-low"; cnsNote = "2 年 CNS 復發風險 < 1%。"; }
+        else if (cnsIpi <= 3) { cnsGrp = "Int (~3%)"; cnsCls = "risk-mid"; cnsNote = "2 年 CNS 復發風險約 3%。"; }
+        else { cnsGrp = "High (~10%)"; cnsCls = "risk-high"; cnsNote = "2 年 CNS 復發風險約 10%，建議評估 CNS staging (LP/MRI) 與預防策略。"; }
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">IPI (DLBCL)</span><span class="risk-badge ${ipiCls}">${ipi} / 5 (${ipiGrp})</span></div>
+          <div class="dose-row"><span class="dose-name">CNS-IPI</span><span class="risk-badge ${cnsCls}">${cnsIpi} / 6 (${cnsGrp})</span></div>
+          <div class="calc-interp">${cnsNote}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `DLBCL IPI = ${ipi}/5 (${ipiGrp} risk); CNS-IPI = ${cnsIpi}/6 (${cnsGrp.split(" ")[0]} risk).`)
+        );
+      }
+
+      coreChks.forEach((c) => c.addEventListener("change", update));
+      cnsChk.addEventListener("change", update);
+      update();
+    },
+
+    // 9. FLIPI
+    flipi(root, ctx) {
+      const items = [
+        "Age > 60 years",
+        "Ann Arbor / Lugano Stage III or IV",
+        "Hemoglobin < 12 g/dL",
+        "> 4 nodal sites involved",
+        "Elevated serum LDH (> ULN)"
+      ];
+      root.innerHTML = `
+        <div class="calc-checklist">
+          ${items
+            .map((l) => `<label class="calc-check-row"><input type="checkbox" class="c_fl_chk" /><span>${l} (+1)</span></label>`)
+            .join("")}
+        </div>
+        <div class="calc-result-box" id="c_fl_out"></div>
+      `;
+      const chks = Array.from(root.querySelectorAll(".c_fl_chk"));
+      const out = root.querySelector("#c_fl_out");
+
+      function update() {
+        const score = chks.filter((c) => c.checked).length;
+        let grp, cls, note;
+        if (score <= 1) { grp = "Low"; cls = "risk-low"; note = "0–1 分：低風險（5 年 OS ~91%）。"; }
+        else if (score === 2) { grp = "Intermediate"; cls = "risk-mid"; note = "2 分：中風險（5 年 OS ~78%）。"; }
+        else { grp = "High"; cls = "risk-high"; note = "3–5 分：高風險（5 年 OS ~53%）。"; }
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">FLIPI (Follicular Lymphoma)</span><span class="risk-badge ${cls}">${score} / 5 (${grp})</span></div>
+          <div class="calc-interp">${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `FLIPI score = ${score}/5 (${grp} risk).`)
+        );
+      }
+
+      chks.forEach((c) => c.addEventListener("change", update));
+      update();
+    },
+
+    // 10. ISS / R-ISS / R2-ISS (MM)
+    "mm-iss"(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field"><span>Serum β2M (mg/L)</span><input type="number" id="c_mm_b2m" placeholder="例如 4.2" min="0" step="0.1" /></label>
+          <label class="field"><span>Serum Albumin (g/dL)</span><input type="number" id="c_mm_alb" placeholder="例如 3.6" min="0" step="0.1" /></label>
+        </div>
+        <div class="calc-checklist">
+          <label class="calc-check-row"><input type="checkbox" id="c_mm_ldh" /><span>Elevated LDH (> ULN) <small>[R2-ISS +1.0]</small></span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_mm_17p" /><span>FISH: del(17p) <small>[R-ISS HR / R2-ISS +1.0]</small></span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_mm_414" /><span>FISH: t(4;14) <small>[R-ISS HR / R2-ISS +1.0]</small></span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_mm_1416" /><span>FISH: t(14;16) <small>[R-ISS HR]</small></span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_mm_1q" /><span>FISH: 1q gain / amp <small>[R2-ISS +0.5]</small></span></label>
+        </div>
+        <div class="calc-result-box" id="c_mm_out">
+          <div class="calc-placeholder">輸入 β2M 與 Albumin（並勾選 LDH / FISH），自動計算 ISS、R-ISS 與 R2-ISS</div>
+        </div>
+      `;
+      const inB2m = root.querySelector("#c_mm_b2m");
+      const inAlb = root.querySelector("#c_mm_alb");
+      const chkLdh = root.querySelector("#c_mm_ldh");
+      const chk17p = root.querySelector("#c_mm_17p");
+      const chk414 = root.querySelector("#c_mm_414");
+      const chk1416 = root.querySelector("#c_mm_1416");
+      const chk1q = root.querySelector("#c_mm_1q");
+      const out = root.querySelector("#c_mm_out");
+
+      function update() {
+        const b2m = parseFloat(inB2m.value);
+        const alb = parseFloat(inAlb.value);
+        if (isNaN(b2m) || isNaN(alb)) {
+          out.innerHTML = `<div class="calc-placeholder">輸入 β2M 與 Albumin（並勾選 LDH / FISH），自動計算 ISS、R-ISS 與 R2-ISS</div>`;
+          return;
+        }
+
+        // ISS
+        let iss = 2;
+        if (b2m < 3.5 && alb >= 3.5) iss = 1;
+        else if (b2m >= 5.5) iss = 3;
+        const issRoman = ["", "I", "II", "III"][iss];
+
+        // R-ISS
+        const hasRissHr = chk17p.checked || chk414.checked || chk1416.checked;
+        let riss = 2;
+        if (iss === 1 && !chkLdh.checked && !hasRissHr) riss = 1;
+        else if (iss === 3 && (chkLdh.checked || hasRissHr)) riss = 3;
+        const rissRoman = ["", "I", "II", "III"][riss];
+
+        // R2-ISS
+        let r2 = 0;
+        if (iss === 2) r2 += 1.0;
+        else if (iss === 3) r2 += 1.5;
+        if (chk17p.checked) r2 += 1.0;
+        if (chkLdh.checked) r2 += 1.0;
+        if (chk414.checked) r2 += 1.0;
+        if (chk1q.checked) r2 += 0.5;
+
+        let r2Grp, r2Cls;
+        if (r2 === 0) { r2Grp = "Low (I)"; r2Cls = "risk-low"; }
+        else if (r2 <= 1.0) { r2Grp = "Low-Int (II)"; r2Cls = "risk-low"; }
+        else if (r2 <= 2.5) { r2Grp = "Int-High (III)"; r2Cls = "risk-mid"; }
+        else { r2Grp = "High (IV)"; r2Cls = "risk-high"; }
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">ISS</span><span class="risk-badge ${iss === 3 ? "risk-high" : iss === 2 ? "risk-mid" : "risk-low"}">Stage ${issRoman}</span></div>
+          <div class="dose-row"><span class="dose-name">R-ISS</span><span class="risk-badge ${riss === 3 ? "risk-high" : riss === 2 ? "risk-mid" : "risk-low"}">Stage ${rissRoman}</span></div>
+          <div class="dose-row"><span class="dose-name">R2-ISS (2022)</span><span class="risk-badge ${r2Cls}">${r2.toFixed(1)} pts — ${r2Grp}</span></div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(
+            () => `Multiple Myeloma staging: ISS Stage ${issRoman}, R-ISS Stage ${rissRoman}, R2-ISS ${r2.toFixed(1)} pts (${r2Grp}) [B2M ${b2m} mg/L, Alb ${alb} g/dL].`
+          )
+        );
+      }
+
+      [inB2m, inAlb].forEach((x) => x.addEventListener("input", update));
+      [chkLdh, chk17p, chk414, chk1416, chk1q].forEach((x) => x.addEventListener("change", update));
+    },
+
+    // 11. Mayo 2012 (AL Amyloidosis)
+    mayo2012(root, ctx) {
+      const items = [
+        "cTnT ≥ 0.03 ng/mL (or hs-TnT ≥ 40 ng/L)",
+        "NT-proBNP ≥ 1,800 pg/mL",
+        "dFLC (involved − uninvolved FLC) ≥ 180 mg/L"
+      ];
+      root.innerHTML = `
+        <div class="calc-checklist">
+          ${items
+            .map((l) => `<label class="calc-check-row"><input type="checkbox" class="c_mayo_chk" /><span>${l} (+1)</span></label>`)
+            .join("")}
+        </div>
+        <div class="calc-result-box" id="c_mayo_out"></div>
+      `;
+      const chks = Array.from(root.querySelectorAll(".c_mayo_chk"));
+      const out = root.querySelector("#c_mayo_out");
+
+      function update() {
+        const pts = chks.filter((c) => c.checked).length;
+        const stages = [
+          { st: "Stage I", cls: "risk-low", mos: "~94 months" },
+          { st: "Stage II", cls: "risk-mid", mos: "~40 months" },
+          { st: "Stage III", cls: "risk-high", mos: "~14 months" },
+          { st: "Stage IV", cls: "risk-high", mos: "~6 months" }
+        ][pts];
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">Mayo 2012 (AL Amyloidosis)</span><span class="risk-badge ${stages.cls}">${stages.st} (${pts}/3)</span></div>
+          <div class="calc-interp">歷史中位存活 (mOS)：${stages.mos}。心臟侵犯者慎用利尿劑、避免過度輸液與 Digoxin/CCB。</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `AL Amyloidosis Mayo 2012 ${stages.st} (${pts}/3 risk factors).`)
+        );
+      }
+
+      chks.forEach((c) => c.addEventListener("change", update));
+      update();
+    },
+
+    // 12. Revised IPSET-thrombosis (ET)
+    ipset(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-checklist">
+          <label class="calc-check-row"><input type="checkbox" id="c_ip_age" /><span>Age > 60 years</span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_ip_throm" /><span>History of thrombosis (既往血栓病史)</span></label>
+          <label class="calc-check-row"><input type="checkbox" id="c_ip_jak2" /><span>JAK2 V617F mutation positive</span></label>
+        </div>
+        <div class="calc-result-box" id="c_ip_out"></div>
+      `;
+      const age = root.querySelector("#c_ip_age");
+      const throm = root.querySelector("#c_ip_throm");
+      const jak2 = root.querySelector("#c_ip_jak2");
+      const out = root.querySelector("#c_ip_out");
+
+      function update() {
+        let grp, cls, note;
+        if (throm.checked || (age.checked && jak2.checked)) {
+          grp = "High Risk";
+          cls = "risk-high";
+          note = "建議降細胞治療 (Hydroxyurea / IFN / Anagrelide) + 低劑量 Aspirin（若 PLT > 1000K 先排除 AvWD）。";
+        } else if (age.checked && !throm.checked && !jak2.checked) {
+          grp = "Intermediate Risk";
+          cls = "risk-mid";
+          note = "建議低劑量 Aspirin；視心血管危險因子評估是否加降細胞藥。";
+        } else if (!age.checked && !throm.checked && jak2.checked) {
+          grp = "Low Risk";
+          cls = "risk-low";
+          note = "建議低劑量 Aspirin 100 mg QD（若無出血禁忌）。";
+        } else {
+          grp = "Very Low Risk";
+          cls = "risk-low";
+          note = "無須降細胞治療，可觀察（除非有心血管危險因子才考慮 Aspirin）。";
+        }
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">Revised IPSET-thrombosis (ET)</span><span class="risk-badge ${cls}">${grp}</span></div>
+          <div class="calc-interp">${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `ET Revised IPSET-thrombosis: ${grp}.`)
+        );
+      }
+
+      [age, throm, jak2].forEach((x) => x.addEventListener("change", update));
+      update();
+    },
+
+    // 13. MASCC Risk Index (FN)
+    mascc(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-stack">
+          <label class="field">
+            <span>Burden of febrile neutropenia illness (症狀嚴重度)</span>
+            <select id="c_ma_burden">
+              <option value="5">無症狀或輕微症狀 (+5分)</option>
+              <option value="3">中度症狀 (+3分)</option>
+              <option value="0">嚴重症狀或瀕危 (0分)</option>
+            </select>
+          </label>
+        </div>
+        <div class="calc-checklist" style="margin-top:8px;">
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="5" checked /><span>No hypotension (SBP > 90 mmHg) (+5)</span></label>
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="4" checked /><span>No COPD (+4)</span></label>
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="4" checked /><span>Solid tumor OR heme malignancy with no prior fungal infection (+4)</span></label>
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="3" checked /><span>No dehydration requiring IV fluids (+3)</span></label>
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="3" /><span>Outpatient status at onset of fever (+3)</span></label>
+          <label class="calc-check-row"><input type="checkbox" class="c_ma_chk" data-pts="2" /><span>Age < 60 years (+2)</span></label>
+        </div>
+        <div class="calc-result-box" id="c_ma_out"></div>
+      `;
+      const sel = root.querySelector("#c_ma_burden");
+      const chks = Array.from(root.querySelectorAll(".c_ma_chk"));
+      const out = root.querySelector("#c_ma_out");
+
+      function update() {
+        let score = parseInt(sel.value, 10);
+        chks.forEach((c) => {
+          if (c.checked) score += parseInt(c.getAttribute("data-pts"), 10);
+        });
+        const isLow = score >= 21;
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">MASCC Risk Index (FN)</span><span class="risk-badge ${isLow ? "risk-low" : "risk-high"}">${score} / 26 (${isLow ? "Low Risk" : "High Risk"})</span></div>
+          <div class="calc-interp">${isLow ? "≥ 21 分：低風險（若臨床穩定可評估門診口服抗生素或短期觀察）。" : "< 21 分：高風險 → 須立即住院給予靜脈廣效抗綠膿桿菌抗生素 (Cefepime / Tazocin)！"}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `MASCC risk index = ${score}/26 (${isLow ? "low-risk" : "high-risk"} febrile neutropenia).`)
+        );
+      }
+
+      sel.addEventListener("change", update);
+      chks.forEach((c) => c.addEventListener("change", update));
+      update();
+    },
+
+    // 14. HScore (HLH)
+    hscore(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-grid-2">
+          <label class="field">
+            <span>已知免疫抑制</span>
+            <select class="c_hs">
+              <option value="0">無 (0)</option>
+              <option value="18">有 (+18)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>體溫 (°C)</span>
+            <select class="c_hs">
+              <option value="0">< 38.4 (0)</option>
+              <option value="33">38.4–39.4 (+33)</option>
+              <option value="49">> 39.4 (+49)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>肝脾腫大</span>
+            <select class="c_hs">
+              <option value="0">無 (0)</option>
+              <option value="23">肝或脾其一 (+23)</option>
+              <option value="38">肝脾皆腫大 (+38)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>血球低下數 (Hb≤9.2/WBC≤5k/Plt≤110k)</span>
+            <select class="c_hs">
+              <option value="0">0–1 系 (0)</option>
+              <option value="24">2 系 (+24)</option>
+              <option value="34">3 系 (+34)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Ferritin (ng/mL)</span>
+            <select class="c_hs">
+              <option value="0">< 2,000 (0)</option>
+              <option value="35">2,000–6,000 (+35)</option>
+              <option value="50">> 6,000 (+50)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Triglyceride (mg/dL)</span>
+            <select class="c_hs">
+              <option value="0">< 132.7 (0)</option>
+              <option value="44">132.7–354 (+44)</option>
+              <option value="64">> 354 (+64)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Fibrinogen (mg/dL)</span>
+            <select class="c_hs">
+              <option value="0">> 250 (0)</option>
+              <option value="30">≤ 250 (+30)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>AST (U/L)</span>
+            <select class="c_hs">
+              <option value="0">< 30 (0)</option>
+              <option value="19">≥ 30 (+19)</option>
+            </select>
+          </label>
+        </div>
+        <label class="field" style="margin-bottom:10px;">
+          <span>BM Hemophagocytosis (骨髓噬血球現象)</span>
+          <select class="c_hs">
+            <option value="0">無 / 未檢查 (0)</option>
+            <option value="35">有 (+35)</option>
+          </select>
+        </label>
+        <div class="calc-result-box" id="c_hs_out"></div>
+      `;
+      const sels = Array.from(root.querySelectorAll(".c_hs"));
+      const out = root.querySelector("#c_hs_out");
+
+      function update() {
+        const score = sels.reduce((sum, s) => sum + parseInt(s.value, 10), 0);
+        const prob = 100 / (1 + Math.exp(-(-11.4 + 0.0684 * score)));
+        const probStr = prob < 1 ? "< 1%" : prob > 99 ? "> 99%" : `${Math.round(prob)}%`;
+        const isHigh = score >= 169;
+        const cls = score >= 169 ? "risk-high" : score >= 140 ? "risk-mid" : "risk-low";
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">HScore (HLH 機率 ${probStr})</span><span class="risk-badge ${cls}">${score} pts</span></div>
+          <div class="calc-interp">${isHigh ? "≥ 169 分（最佳切點，Sens 93% / Spec 86%）→ 高度支持 HLH，須積極尋找誘因（淋巴瘤/EBV）並評估治療！" : "< 169 分 → 尚未達最佳診斷切點，請結合臨床與 HLH-2004 持續追蹤。"}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `HScore = ${score} (estimated HLH probability ${probStr}; cutoff >= 169).`)
+        );
+      }
+
+      sels.forEach((s) => s.addEventListener("change", update));
+      update();
+    },
+
+    // 15. HLH-2004 Criteria
+    hlh2004(root, ctx) {
+      const items = [
+        "Fever ≥ 38.5°C",
+        "Splenomegaly",
+        "Cytopenia ≥ 2 lineages (Hb <9, PLT <100k, ANC <1.0k)",
+        "Fasting TG > 265 mg/dL and/or Fibrinogen < 150 mg/dL",
+        "Hemophagocytosis in BM, spleen, LN, or liver",
+        "Low or absent NK-cell activity",
+        "Ferritin > 500 ng/mL",
+        "Soluble CD25 (sIL-2Rα) > 2,400 U/mL"
+      ];
+      root.innerHTML = `
+        <div class="calc-checklist">
+          ${items
+            .map((l) => `<label class="calc-check-row"><input type="checkbox" class="c_hlh_chk" /><span>${l}</span></label>`)
+            .join("")}
+        </div>
+        <div class="calc-result-box" id="c_hlh_out"></div>
+      `;
+      const chks = Array.from(root.querySelectorAll(".c_hlh_chk"));
+      const out = root.querySelector("#c_hlh_out");
+
+      function update() {
+        const cnt = chks.filter((c) => c.checked).length;
+        const met = cnt >= 5;
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">HLH-2004 Criteria</span><span class="risk-badge ${met ? "risk-high" : cnt >= 3 ? "risk-mid" : "risk-low"}">${cnt} / 8 (${met ? "符合診斷" : "未達標準"})</span></div>
+          <div class="calc-interp">${met ? "符合 ≥ 5/8 項 HLH-2004 診斷標準！務必同步尋找次發性誘因（淋巴瘤 / EBV / 感染 / 自體免疫）。" : "未達 5/8 項；成人次發性 HLH 建議同時搭配 HScore 評估。"}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(() => `HLH-2004 diagnostic criteria: ${cnt}/8 fulfilled (${met ? "meets HLH criteria" : "does not meet >=5/8 criteria"}).`)
+        );
+      }
+
+      chks.forEach((c) => c.addEventListener("change", update));
+      update();
+    },
+
+    // 16. MAGIC Criteria (Acute GvHD)
+    magic(root, ctx) {
+      root.innerHTML = `
+        <div class="calc-stack">
+          <label class="field">
+            <span>Skin (皮疹 BSA 範圍)</span>
+            <select id="c_mg_skin">
+              <option value="0">Stage 0: 無皮疹</option>
+              <option value="1">Stage 1: < 25% BSA</option>
+              <option value="2">Stage 2: 25–50% BSA</option>
+              <option value="3">Stage 3: > 50% BSA</option>
+              <option value="4">Stage 4: 全身紅皮症併水泡/脫屑 > 5%</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Liver (Total Bilirubin)</span>
+            <select id="c_mg_liver">
+              <option value="0">Stage 0: < 2.0 mg/dL</option>
+              <option value="1">Stage 1: 2.0–3.0 mg/dL</option>
+              <option value="2">Stage 2: 3.1–6.0 mg/dL</option>
+              <option value="3">Stage 3: 6.1–15.0 mg/dL</option>
+              <option value="4">Stage 4: > 15.0 mg/dL</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Upper GI (上消化道症狀)</span>
+            <select id="c_mg_ugi">
+              <option value="0">Stage 0: 無</option>
+              <option value="1">Stage 1: 持續噁心 / 嘔吐 / 厭食</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Lower GI (成人每日腹瀉量)</span>
+            <select id="c_mg_lgi">
+              <option value="0">Stage 0: < 500 mL/day</option>
+              <option value="1">Stage 1: 500–999 mL/day</option>
+              <option value="2">Stage 2: 1,000–1,500 mL/day</option>
+              <option value="3">Stage 3: > 1,500 mL/day</option>
+              <option value="4">Stage 4: 劇烈腹痛伴腸阻塞或明顯血便</option>
+            </select>
+          </label>
+        </div>
+        <div class="calc-result-box" id="c_mg_out"></div>
+      `;
+      const sSkin = root.querySelector("#c_mg_skin");
+      const sLiver = root.querySelector("#c_mg_liver");
+      const sUgi = root.querySelector("#c_mg_ugi");
+      const sLgi = root.querySelector("#c_mg_lgi");
+      const out = root.querySelector("#c_mg_out");
+
+      function update() {
+        const sk = parseInt(sSkin.value, 10);
+        const lv = parseInt(sLiver.value, 10);
+        const ug = parseInt(sUgi.value, 10);
+        const lg = parseInt(sLgi.value, 10);
+
+        let grade, cls, note;
+        if (sk === 4 || lv === 4 || lg === 4) {
+          grade = "Grade IV";
+          cls = "risk-high";
+          note = "重度 aGvHD → 立即通知 Hema VS，啟動系統性類固醇 (Methylprednisolone 2 mg/kg/day) 並評估二線治療 (Ruxolitinib)。";
+        } else if (lv >= 2 || lg >= 2) {
+          grade = "Grade III";
+          cls = "risk-high";
+          note = "中重度 aGvHD → 通知 Hema VS 啟動系統性類固醇 (Methylprednisolone 2 mg/kg/day) 與嚴密感染/電解質監測。";
+        } else if (sk === 3 || lv === 1 || ug === 1 || lg === 1) {
+          grade = "Grade II";
+          cls = "risk-mid";
+          note = "中度 aGvHD → 與 Hema VS 討論系統性類固醇 (1–2 mg/kg/day；若僅 Upper GI 可評估併用 Budesonide)。";
+        } else if (sk >= 1) {
+          grade = "Grade I";
+          cls = "risk-low";
+          note = "輕度局部皮膚 aGvHD → 外用類固醇藥膏，維持原免疫抑制劑血中濃度。";
+        } else {
+          grade = "Grade 0";
+          cls = "risk-low";
+          note = "無急性 GvHD 器官分期表現。";
+        }
+
+        out.innerHTML = `
+          <div class="dose-row"><span class="dose-name">MAGIC Acute GvHD</span><span class="risk-badge ${cls}">${grade}</span></div>
+          <div class="calc-interp">Organ staging: Skin ${sk}, Liver ${lv}, Upper GI ${ug}, Lower GI ${lg}。<br/>${note}</div>
+        `;
+        out.appendChild(
+          ctx.makeInsertBtn(
+            () => `MAGIC acute GvHD overall ${grade} (Skin stage ${sk}, Liver stage ${lv}, Upper GI stage ${ug}, Lower GI stage ${lg}).`
+          )
+        );
+      }
+
+      [sSkin, sLiver, sUgi, sLgi].forEach((s) => s.addEventListener("change", update));
+      update();
+    }
+  };
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  window.HemaCalculators = {
+    createHub,
+    CALCULATORS
+  };
+})();
+
+</script>
+  <script>
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "hema_consult_templates_v4";
+  const LEGACY_STORAGE_KEY = "hema_consult_templates_v3";
+
+  // State
+  let templates = loadTemplates();
+  let activeTemplateId = templates[0]?.id || null;
+  let checkedMap = {}; // { [templateId]: Set<itemId> }
+  let editingItemId = null;
+  let searchQuery = "";
+  let activeCategory = "ALL";
+
+  // DOM Elements
+  const el = {
+    templateSearch: document.getElementById("templateSearch"),
+    categoryFilter: document.getElementById("categoryFilter"),
+    templateList: document.getElementById("templateList"),
+    currentDiseaseName: document.getElementById("currentDiseaseName"),
+    currentDiseaseCategory: document.getElementById("currentDiseaseCategory"),
+    currentDiseaseSubtitle: document.getElementById("currentDiseaseSubtitle"),
+    bannerAlertBox: document.getElementById("bannerAlertBox"),
+    ddxDetails: document.getElementById("ddxDetails"),
+    ddxContent: document.getElementById("ddxContent"),
+    checklistContainer: document.getElementById("checklistContainer"),
+    newItemInput: document.getElementById("newItemInput"),
+    btnAddItem: document.getElementById("btnAddItem"),
+    btnSelectCore: document.getElementById("btnSelectCore"),
+    btnSelectAll: document.getElementById("btnSelectAll"),
+    btnClearAll: document.getElementById("btnClearAll"),
+    btnDeleteTemplate: document.getElementById("btnDeleteTemplate"),
+    chkGmAdmission: document.getElementById("chkGmAdmission"),
+    chkClosing: document.getElementById("chkClosing"),
+    chkIncludeRef: document.getElementById("chkIncludeRef"),
+    gmAdmissionLabel: document.getElementById("gmAdmissionLabel"),
+    closingLabel: document.getElementById("closingLabel"),
+    outputModeSelect: document.getElementById("outputModeSelect"),
+    listStyleSelect: document.getElementById("listStyleSelect"),
+    previewTextarea: document.getElementById("previewTextarea"),
+    btnSyncPreview: document.getElementById("btnSyncPreview"),
+    btnCopy: document.getElementById("btnCopy"),
+    btnNewTemplate: document.getElementById("btnNewTemplate"),
+    btnExport: document.getElementById("btnExport"),
+    btnImport: document.getElementById("btnImport"),
+    importFileInput: document.getElementById("importFileInput"),
+    btnResetAll: document.getElementById("btnResetAll"),
+    // Modal
+    newTemplateModal: document.getElementById("newTemplateModal"),
+    btnCloseModal: document.getElementById("btnCloseModal"),
+    btnCancelModal: document.getElementById("btnCancelModal"),
+    btnSaveNewTemplate: document.getElementById("btnSaveNewTemplate"),
+    newTplName: document.getElementById("newTplName"),
+    newTplSubtitle: document.getElementById("newTplSubtitle"),
+    newTplCategory: document.getElementById("newTplCategory"),
+    newTplItems: document.getElementById("newTplItems"),
+    // Calculators Hub
+    calcHubContainer: document.getElementById("calcHubContainer"),
+    toast: document.getElementById("toast")
+  };
+
+  let calcHub = null;
+
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function loadTemplates() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+      // Migrate custom templates from v3 while refreshing built-in subtitles
+      const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacyRaw) {
+        const legacyParsed = JSON.parse(legacyRaw);
+        if (Array.isArray(legacyParsed) && legacyParsed.length > 0) {
+          const defaultMap = new Map(window.DEFAULT_TEMPLATES.map((d) => [d.id, d]));
+          const merged = legacyParsed.map((tpl) => {
+            const def = defaultMap.get(tpl.id);
+            return def ? { ...tpl, subtitle: def.subtitle } : tpl;
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          return merged;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to load templates from localStorage:", err);
+    }
+    return deepClone(window.DEFAULT_TEMPLATES);
+  }
+
+  function saveTemplates() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+    } catch (err) {
+      console.warn("Failed to save templates to localStorage:", err);
+    }
+  }
+
+  function getActiveTemplate() {
+    return templates.find((t) => t.id === activeTemplateId) || templates[0];
+  }
+
+  function ensureCheckedSet(tpl) {
+    if (!checkedMap[tpl.id]) {
+      checkedMap[tpl.id] = new Set(
+        tpl.items.filter((it) => it.defaultChecked !== false).map((it) => it.id)
+      );
+    }
+    return checkedMap[tpl.id];
+  }
+
+  function getCategoryClass(cat) {
+    switch (cat) {
+      case "RBC": return "cat-RBC";
+      case "Coagulation": return "cat-Coagulation";
+      case "Leukemia": return "cat-Leukemia";
+      case "Lymphoma/MM": return "cat-Lymphoma";
+      case "Emergency": return "cat-Emergency";
+      default: return "cat-Other";
+    }
+  }
+
+  let toastTimer = null;
+  function showToast(msg) {
+    el.toast.textContent = msg;
+    el.toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      el.toast.classList.remove("show");
+    }, 2200);
+  }
+
+  // Render Sidebar
+  function renderSidebar() {
+    const q = searchQuery.trim().toLowerCase();
+    el.templateList.innerHTML = "";
+
+    const filtered = templates.filter((tpl) => {
+      if (activeCategory !== "ALL" && tpl.category !== activeCategory) {
+        return false;
+      }
+      if (!q) return true;
+      const inMeta =
+        tpl.name.toLowerCase().includes(q) ||
+        (tpl.subtitle || "").toLowerCase().includes(q) ||
+        (tpl.category || "").toLowerCase().includes(q) ||
+        (tpl.ddxNote || "").toLowerCase().includes(q);
+      const inItems = tpl.items.some((it) => it.text.toLowerCase().includes(q));
+      return inMeta || inItems;
+    });
+
+    if (filtered.length === 0) {
+      el.templateList.innerHTML = `<div class="calc-placeholder">找不到符合條件的模板</div>`;
+      return;
+    }
+
+    filtered.forEach((tpl) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `template-btn ${tpl.id === activeTemplateId ? "active" : ""}`;
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", tpl.id === activeTemplateId ? "true" : "false");
+
+      btn.innerHTML = `
+        <div class="template-btn-cat">
+          <span class="category-pill ${getCategoryClass(tpl.category)}">${escapeHtml(tpl.category || "Other")}</span>
+        </div>
+        <div class="template-btn-name">${escapeHtml(tpl.name)}</div>
+        <div class="template-btn-sub">${escapeHtml(tpl.subtitle || "")}</div>
+      `;
+
+      btn.addEventListener("click", () => {
+        activeTemplateId = tpl.id;
+        editingItemId = null;
+        el.chkGmAdmission.checked = Boolean(tpl.defaultGmAdmission);
+        el.ddxDetails.open = false;
+        renderAll();
+        if (calcHub) calcHub.onTemplateChange();
+      });
+
+      el.templateList.appendChild(btn);
+    });
+  }
+
+  // Render Checklist Builder
+  function renderBuilder() {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+
+    const checkedSet = ensureCheckedSet(tpl);
+
+    el.currentDiseaseName.textContent = tpl.name;
+    el.currentDiseaseSubtitle.textContent = tpl.subtitle || "";
+    el.currentDiseaseCategory.textContent = tpl.category || "Other";
+    el.currentDiseaseCategory.className = `category-pill ${getCategoryClass(tpl.category)}`;
+
+    // High-risk banner alert
+    if (tpl.bannerAlert) {
+      el.bannerAlertBox.textContent = tpl.bannerAlert;
+      el.bannerAlertBox.hidden = false;
+    } else {
+      el.bannerAlertBox.hidden = true;
+    }
+
+    // DDx / Criteria reference
+    if (tpl.ddxNote) {
+      el.ddxContent.textContent = tpl.ddxNote;
+      el.ddxDetails.hidden = false;
+    } else {
+      el.ddxDetails.hidden = true;
+    }
+
+    const isBuiltIn = window.DEFAULT_TEMPLATES.some((d) => d.id === tpl.id);
+    el.btnDeleteTemplate.hidden = isBuiltIn;
+
+    el.checklistContainer.innerHTML = "";
+
+    tpl.items.forEach((item) => {
+      const isChecked = checkedSet.has(item.id);
+      const isEditing = editingItemId === item.id;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = `check-item ${isChecked ? "checked" : ""}`;
+
+      const mainRow = document.createElement("div");
+      mainRow.className = "check-item-main";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = isChecked;
+      checkbox.setAttribute("aria-label", "選取此照會項目");
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          checkedSet.add(item.id);
+        } else {
+          checkedSet.delete(item.id);
+        }
+        wrapper.classList.toggle("checked", checkbox.checked);
+        generatePreview();
+      });
+
+      const body = document.createElement("div");
+      body.className = "check-item-body";
+
+      const meta = document.createElement("div");
+      meta.className = "check-item-meta";
+
+      const tagsDiv = document.createElement("div");
+      tagsDiv.className = "check-item-tags";
+      if (item.tag) {
+        const tagSpan = document.createElement("span");
+        const isUrgent = /emergency|atra|ds|g-csf|septic/i.test(item.tag);
+        tagSpan.className = `tag ${isUrgent ? "tag-emergency" : ""}`;
+        tagSpan.textContent = item.tag;
+        tagsDiv.appendChild(tagSpan);
+      }
+      if (item.optional) {
+        const optSpan = document.createElement("span");
+        optSpan.className = "tag tag-optional";
+        optSpan.textContent = "選用";
+        tagsDiv.appendChild(optSpan);
+      }
+
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "check-item-actions";
+
+      const btnEdit = document.createElement("button");
+      btnEdit.type = "button";
+      btnEdit.className = "icon-btn";
+      btnEdit.title = isEditing ? "儲存修改" : "編輯此項目";
+      btnEdit.textContent = isEditing ? "完成" : "編輯";
+      btnEdit.addEventListener("click", () => {
+        if (isEditing) {
+          const area = wrapper.querySelector(".check-item-edit-area");
+          if (area && area.value.trim()) {
+            item.text = area.value.trim();
+            saveTemplates();
+          }
+          editingItemId = null;
+        } else {
+          editingItemId = item.id;
+        }
+        renderBuilder();
+        generatePreview();
+      });
+
+      const btnDel = document.createElement("button");
+      btnDel.type = "button";
+      btnDel.className = "icon-btn";
+      btnDel.title = "刪除此項目";
+      btnDel.textContent = "✕";
+      btnDel.addEventListener("click", () => {
+        tpl.items = tpl.items.filter((x) => x.id !== item.id);
+        checkedSet.delete(item.id);
+        saveTemplates();
+        renderBuilder();
+        generatePreview();
+        showToast("已刪除項目");
+      });
+
+      actionsDiv.appendChild(btnEdit);
+      actionsDiv.appendChild(btnDel);
+
+      meta.appendChild(tagsDiv);
+      meta.appendChild(actionsDiv);
+      body.appendChild(meta);
+
+      if (isEditing) {
+        const area = document.createElement("textarea");
+        area.className = "check-item-edit-area";
+        area.value = item.text;
+        area.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            editingItemId = null;
+            renderBuilder();
+          }
+        });
+        body.appendChild(area);
+        setTimeout(() => area.focus(), 0);
+      } else {
+        const textDiv = document.createElement("div");
+        textDiv.className = "check-item-text";
+        textDiv.textContent = item.text;
+        textDiv.title = "點兩下可快速編輯";
+        textDiv.addEventListener("dblclick", () => {
+          editingItemId = item.id;
+          renderBuilder();
+        });
+        body.appendChild(textDiv);
+      }
+
+      mainRow.appendChild(checkbox);
+      mainRow.appendChild(body);
+      wrapper.appendChild(mainRow);
+
+      if (item.note) {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "item-note";
+        noteDiv.innerHTML = `<strong>內部備忘（不會複製）：</strong>${escapeHtml(item.note)}`;
+        wrapper.appendChild(noteDiv);
+      }
+
+      el.checklistContainer.appendChild(wrapper);
+    });
+  }
+
+  // Generate EMR Preview Text
+  function generatePreview() {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+
+    const checkedSet = ensureCheckedSet(tpl);
+    const selectedItems = tpl.items.filter((it) => checkedSet.has(it.id));
+    const listStyle = el.listStyleSelect.value;
+    const outputMode = el.outputModeSelect.value;
+
+    const sections = [];
+
+    if (outputMode === "full") {
+      const peBlock = window.PE_TEMPLATES[tpl.peTemplate] || window.PE_TEMPLATES.standard;
+      sections.push(
+`Age / Gender: ___ y/o M/F
+Underlying disease:
+
+[Major past history]
+
+[History summary & assessments]
+We were consulted for further evaluation and management.
+
+${peBlock}
+
+[Impression]
+${tpl.impression || `1. ${tpl.name}`}
+
+[Suggestion]`
+      );
+    }
+
+    const planLines = selectedItems.map((item, idx) => {
+      const prefix = listStyle === "number" ? `${idx + 1}. ` : "- ";
+      return `${prefix}${item.text}`;
+    });
+
+    if (planLines.length > 0) {
+      sections.push(planLines.join("\n"));
+    }
+
+    const footerLines = [];
+    if (el.chkGmAdmission.checked) {
+      footerLines.push(`- ${window.FOOTER_CONFIG.gmAdmissionText}`);
+    }
+    if (el.chkClosing.checked) {
+      footerLines.push(`- ${window.FOOTER_CONFIG.closingText}`);
+    }
+    if (footerLines.length > 0) {
+      sections.push(footerLines.join("\n"));
+    }
+
+    if (el.chkIncludeRef.checked && Array.isArray(tpl.references) && tpl.references.length > 0) {
+      const refBlock = "Reference:\n" + tpl.references.map((r, i) => `${i + 1}. ${r}`).join("\n");
+      sections.push(refBlock);
+    }
+
+    el.previewTextarea.value = sections.join("\n\n");
+  }
+
+  function renderAll() {
+    renderSidebar();
+    renderBuilder();
+    generatePreview();
+    if (calcHub) calcHub.onTemplateChange();
+  }
+
+  // Copy to Clipboard
+  async function copyPreviewText() {
+    const text = el.previewTextarea.value;
+    if (!text.trim()) {
+      showToast("目前沒有可複製的文字");
+      return;
+    }
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        el.previewTextarea.select();
+        document.execCommand("copy");
+      }
+      showToast("已複製照會文字到剪貼簿！");
+    } catch (err) {
+      el.previewTextarea.select();
+      document.execCommand("copy");
+      showToast("已複製照會文字到剪貼簿！");
+    }
+  }
+
+  // Add item to current template
+  function addNewItem() {
+    const val = el.newItemInput.value.trim();
+    if (!val) return;
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+
+    const newItem = {
+      id: `${tpl.id}-custom-${Date.now()}`,
+      tag: "Custom",
+      text: val,
+      defaultChecked: true
+    };
+    tpl.items.push(newItem);
+    ensureCheckedSet(tpl).add(newItem.id);
+    el.newItemInput.value = "";
+    saveTemplates();
+    renderBuilder();
+    generatePreview();
+    showToast("已加入新項目");
+  }
+
+  // ==================== Calculators Hub ====================
+  if (window.HemaCalculators && el.calcHubContainer) {
+    calcHub = window.HemaCalculators.createHub({
+      container: el.calcHubContainer,
+      getActiveTemplateId: () => activeTemplateId,
+      onInsertText: (line) => {
+        const current = el.previewTextarea.value;
+        el.previewTextarea.value = current ? `${current}\n- ${line}` : line;
+        showToast("已將計算結果插入預覽文字");
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // ==================== Event Listeners ====================
+  el.templateSearch.addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    renderSidebar();
+  });
+
+  el.categoryFilter.querySelectorAll(".filter-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      el.categoryFilter.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+      activeCategory = chip.getAttribute("data-cat");
+      renderSidebar();
+    });
+  });
+
+  el.btnAddItem.addEventListener("click", addNewItem);
+  el.newItemInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addNewItem();
+    }
+  });
+
+  el.btnSelectCore.addEventListener("click", () => {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+    checkedMap[tpl.id] = new Set(
+      tpl.items.filter((it) => it.defaultChecked !== false).map((it) => it.id)
+    );
+    renderBuilder();
+    generatePreview();
+  });
+
+  el.btnSelectAll.addEventListener("click", () => {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+    checkedMap[tpl.id] = new Set(tpl.items.map((it) => it.id));
+    renderBuilder();
+    generatePreview();
+  });
+
+  el.btnClearAll.addEventListener("click", () => {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+    checkedMap[tpl.id] = new Set();
+    renderBuilder();
+    generatePreview();
+  });
+
+  el.btnDeleteTemplate.addEventListener("click", () => {
+    const tpl = getActiveTemplate();
+    if (!tpl) return;
+    if (!confirm(`確定要刪除自訂模板「${tpl.name}」嗎？`)) return;
+    templates = templates.filter((t) => t.id !== tpl.id);
+    delete checkedMap[tpl.id];
+    activeTemplateId = templates[0]?.id || null;
+    saveTemplates();
+    renderAll();
+    showToast("已刪除模板");
+  });
+
+  el.chkGmAdmission.addEventListener("change", generatePreview);
+  el.chkClosing.addEventListener("change", generatePreview);
+  el.chkIncludeRef.addEventListener("change", generatePreview);
+  el.outputModeSelect.addEventListener("change", generatePreview);
+  el.listStyleSelect.addEventListener("change", generatePreview);
+  el.btnSyncPreview.addEventListener("click", () => {
+    generatePreview();
+    showToast("已重新同步預覽文字");
+  });
+  el.btnCopy.addEventListener("click", copyPreviewText);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "c") {
+      e.preventDefault();
+      copyPreviewText();
+    }
+  });
+
+  // (Calculator hub listeners are managed inside calculators.js)
+
+  // New Template Modal
+  function openModal() {
+    el.newTplName.value = "";
+    el.newTplSubtitle.value = "";
+    el.newTplItems.value = "";
+    el.newTemplateModal.hidden = false;
+    el.newTplName.focus();
+  }
+
+  function closeModal() {
+    el.newTemplateModal.hidden = true;
+  }
+
+  el.btnNewTemplate.addEventListener("click", openModal);
+  el.btnCloseModal.addEventListener("click", closeModal);
+  el.btnCancelModal.addEventListener("click", closeModal);
+  el.newTemplateModal.addEventListener("click", (e) => {
+    if (e.target === el.newTemplateModal) closeModal();
+  });
+
+  el.btnSaveNewTemplate.addEventListener("click", () => {
+    const name = el.newTplName.value.trim();
+    if (!name) {
+      alert("請輸入疾病名稱");
+      el.newTplName.focus();
+      return;
+    }
+    const subtitle = el.newTplSubtitle.value.trim();
+    const category = el.newTplCategory.value;
+    const rawLines = el.newTplItems.value
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    const id = `custom-${Date.now()}`;
+    const newTpl = {
+      id,
+      name,
+      subtitle,
+      category,
+      peTemplate: "standard",
+      impression: `1. ${name}`,
+      references: [],
+      items: rawLines.map((line, idx) => ({
+        id: `${id}-${idx + 1}`,
+        tag: "Suggestion",
+        text: line,
+        defaultChecked: true
+      }))
+    };
+
+    templates.push(newTpl);
+    activeTemplateId = id;
+    saveTemplates();
+    closeModal();
+    renderAll();
+    showToast(`已建立模板「${name}」`);
+  });
+
+  // Export / Import / Reset
+  el.btnExport.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(templates, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hema-consult-templates-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("已匯出模板 JSON 檔");
+  });
+
+  el.btnImport.addEventListener("click", () => {
+    el.importFileInput.click();
+  });
+
+  el.importFileInput.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          throw new Error("Invalid format");
+        }
+        templates = parsed;
+        checkedMap = {};
+        activeTemplateId = templates[0].id;
+        saveTemplates();
+        renderAll();
+        showToast("已成功匯入模板！");
+      } catch (err) {
+        alert("匯入失敗：檔案格式不正確");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  el.btnResetAll.addEventListener("click", () => {
+    if (!confirm("確定要將所有模板恢復為系統預設值嗎？自訂編輯將會被覆蓋。")) return;
+    templates = deepClone(window.DEFAULT_TEMPLATES);
+    checkedMap = {};
+    activeTemplateId = templates[0].id;
+    saveTemplates();
+    renderAll();
+    showToast("已恢復系統預設模板");
+  });
+
+  // Initialize footer labels
+  el.gmAdmissionLabel.textContent = window.FOOTER_CONFIG.gmAdmissionText;
+  el.closingLabel.textContent = window.FOOTER_CONFIG.closingText;
+
+  // Initial render
+  renderAll();
+})();
+
+</script>
+</body>
+</html>
