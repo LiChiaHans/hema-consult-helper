@@ -94,6 +94,25 @@ body {
   color: var(--text-muted);
 }
 
+.portal-link {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.portal-link:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
@@ -1133,6 +1152,7 @@ body {
         <h1 class="app-title">血液科照會罐頭文字系統</h1>
         <p class="app-subtitle">Hematology Consultation Helper · 20 大血液科照會公版 · 含實證指引與 Risk Index</p>
       </div>
+      <a class="portal-link" href="https://lichiahans.github.io/hematology-portal/">← 血液科入口網</a>
     </div>
     <div class="topbar-actions">
       <button id="btnExport" class="btn btn-ghost" title="匯出所有模板為 JSON 檔案，方便分享給住院醫師">匯出模板</button>
