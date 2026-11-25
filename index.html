@@ -31,6 +31,83 @@
   --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
 }
 
+[data-theme="dark"] {
+  --bg: #0b1120;
+  --surface: #111827;
+  --surface-subtle: #1e293b;
+  --border: #263244;
+  --border-strong: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --primary: #38bdf8;
+  --primary-hover: #0ea5e9;
+  --primary-soft: rgba(56, 189, 248, 0.14);
+  --accent-red: #f87171;
+  --accent-red-soft: rgba(248, 113, 113, 0.16);
+  --amber-bg: rgba(251, 191, 36, 0.14);
+  --amber-border: rgba(251, 191, 36, 0.35);
+  --amber-text: #fde68a;
+  --green-bg: rgba(16, 185, 129, 0.15);
+  --green-text: #6ee7b7;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .btn-secondary:hover,
+[data-theme="dark"] .icon-btn:hover,
+[data-theme="dark"] .filter-chip:hover,
+[data-theme="dark"] .template-btn:hover,
+[data-theme="dark"] .ddx-summary:hover,
+[data-theme="dark"] .calc-search-clear:hover,
+[data-theme="dark"] .calc-pill:hover {
+  background: #273549;
+}
+
+[data-theme="dark"] .ddx-box,
+[data-theme="dark"] .ddx-summary,
+[data-theme="dark"] .preview-textarea,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: #0f172a;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+[data-theme="dark"] .check-item.checked {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+[data-theme="dark"] .banner-alert {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+}
+
+[data-theme="dark"] .calc-rec-chip {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #bae6fd;
+}
+
+[data-theme="dark"] .tag {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .tag-optional,
+[data-theme="dark"] .risk-mid {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fde68a;
+}
+
+[data-theme="dark"] .tag-emergency {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1155,6 +1232,7 @@ body {
       <a class="portal-link" href="https://lichiahans.github.io/hematology-portal/">← 血液科入口網</a>
     </div>
     <div class="topbar-actions">
+      <button id="btnTheme" class="btn btn-ghost" type="button" title="切換淺色／暗色主題">🌙 深色</button>
       <button id="btnExport" class="btn btn-ghost" title="匯出所有模板為 JSON 檔案，方便分享給住院醫師">匯出模板</button>
       <button id="btnImport" class="btn btn-ghost" title="匯入先前備份的 JSON 模板">匯入模板</button>
       <input type="file" id="importFileInput" accept=".json" hidden />
@@ -4828,6 +4906,27 @@ ${tpl.impression || `1. ${tpl.name}`}
 
   // Initial render
   renderAll();
+})();
+
+(function () {
+  const btn = document.getElementById("btnTheme");
+  if (!btn) return;
+  const KEY = "hema-portal-theme";
+  function apply(theme) {
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      btn.textContent = "☀️ 淺色";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      btn.textContent = "🌙 深色";
+    }
+  }
+  apply(localStorage.getItem(KEY) || "light");
+  btn.addEventListener("click", function () {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    localStorage.setItem(KEY, next);
+    apply(next);
+  });
 })();
 
 </script>
